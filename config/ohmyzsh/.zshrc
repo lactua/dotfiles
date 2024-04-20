@@ -101,11 +101,10 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias vim=nvim
-# alias sgpt="python -m sgpt"
 alias gdl="cd ~/Téléchargements; git clone"
 alias imanerd="neofetch"
-alias paru-autoremove="paru -Qqtd | paru -Rnsuc"
+alias paru-clean="paru -Qqtd | paru -Rnsuc - ; paru -Scc"
 alias backup="tar -cvzf"
+alias pync="python -B"
 
 export PATH=$PATH:/home/lactua/.spicetify
