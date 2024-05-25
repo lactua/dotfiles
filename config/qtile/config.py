@@ -97,7 +97,7 @@ bar_left_margin = 10
 bar_right_margin = 10
 bar_size = 37
 bar_background_color = theme['background0']
-bar_background_opacity = 0.75
+bar_background_opacity = 0.85
 bar_global_opacity = 1.0
 
 widget_gap = 17
@@ -119,12 +119,12 @@ widget_background_radius = 14
 
 from os.path import expanduser
 from subprocess import run
+from os import system
 from datetime import datetime
 from libqtile import layout, qtile, hook, bar#, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from qtile_extras import widget
-
 
 
 #   _____  _____  _____  _____  _____  _____  _____  _____  _____ 
@@ -133,6 +133,12 @@ from qtile_extras import widget
 #  |_____||__|__||_____||__|__|  |_|  |_____||_____|  |_|  |_____|
 
 groups = [Group(name) for name in groups_names]
+
+@lazy.function
+def screenshot(qtile, mode=0):
+    file_path = datetime.now().strftime(f"{expanduser(sceenshot_path)}%d-%m-%Y-%H-%M-%S.jpg")
+    system(f"scrot {'-s' if mode == 1 else ''} {file_path}")
+    system(f"xclip -selection clipboard -t image/png -i {file_path}")
 
 keys = [
 
@@ -152,7 +158,7 @@ keys = [
     Key([mod, "control"], "up", lazy.layout.grow_up(), desc="Grow window up"),
     Key([mod], "r", lazy.layout.normalize(), desc="Reset all window sizes"),
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
-    Key([mod], "f11", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window",),
+    Key([mod], "x", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window",),
     Key([mod], "f", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
     Key([mod], "Tab", lazy.layout.next(), desc="Move window focus to other window"),
 
@@ -179,9 +185,9 @@ keys = [
 
     # Screenshot
 
-    Key([], "Print", lazy.spawn(f"scrot {expanduser(sceenshot_path)}%d-%m-%Y-%H-%M-%S.jpg")),
-    Key(['mod1'], "Print", lazy.spawn(f"scrot -s {expanduser(sceenshot_path)}%d-%m-%Y-%H-%M-%S.jpg")),
-
+    Key([], "Print", screenshot()),
+    Key(['mod1'], "Print", screenshot(mode=1)),
+    
     # Layouts
 
     Key([mod], "l", lazy.next_layout(), desc="Toggle between layouts"),
@@ -234,7 +240,31 @@ default_background = {
     "filled": True,
     "padding_y": widget_background_y_padding,
     "padding_x": widget_background_x_padding,
+    "group": True
 }
+
+class WidgetTweaker:
+    def __init__(self, func):
+        self.format = func
+
+@WidgetTweaker
+def volume(output):
+    if output.endswith('%'):
+        volume = int(output[:-1])
+
+        icons = {
+            range(0, 33): '󰕿   ',
+            range(33, 66): '󰖀   ',
+            range(66, 101): '󰕾   '
+        }
+
+        icon = icons[next(filter(lambda r: volume in r, icons.keys()))]
+
+        return icon + output
+    elif output == 'M':
+        return '󰕿   Muted'
+    else:
+        return output
 
 left = [
     widget.GroupBox(
@@ -266,17 +296,27 @@ right = [
         decorations=[widget.decorations.RectDecoration(**default_background)],
     ),
         
-    widget.Memory(
-        measure_mem="G",
-        measure_swap="G",
-        format="   {MemUsed: .2f}{mm} /{MemTotal: .2f}{mm}       🖴 {SwapUsed: .2f}{ms} /{SwapTotal: .2f}{ms}",
-        decorations=[widget.decorations.RectDecoration(**default_background)],
-    ),
+    [
+        widget.Memory(
+            measure_mem="G",
+            measure_swap="G",
+            format="   {MemUsed: .2f}{mm} /{MemTotal: .2f}{mm}",
+            decorations=[widget.decorations.RectDecoration(**default_background)],
+        ),
+
+        widget.Memory(
+            measure_mem="G",
+            measure_swap="G",
+            format="🖴 {SwapUsed: .2f}{ms} /{SwapTotal: .2f}{ms}",
+            decorations=[widget.decorations.RectDecoration(**default_background)],
+        ),
+    ],
 
     widget.Volume(
-        step=1,
-        update_interval=0.05,
-        fmt='    {}',
+        step=2,
+        fmt=volume,
+        update_interval=0.01,
+        limit_max_volume=True,
         decorations=[widget.decorations.RectDecoration(**default_background)],
     ),
 
@@ -299,6 +339,16 @@ for index in range(1, 2*len(left)-1, 2):
 
 for index in range(1, 2*len(right)-1, 2):
     right.insert(index, widget.Spacer(length=widget_gap))
+
+for widget_group in filter(lambda g: isinstance(g, list), left):
+    index = left.index(widget_group)
+    left.pop(index)
+    left = left[:index] + widget_group + left[index:]
+
+for widget_group in filter(lambda g: isinstance(g, list), right):
+    index = right.index(widget_group)
+    right.pop(index)
+    right = right[:index] + widget_group + right[index:]
 
 screens = [
     Screen(
@@ -353,10 +403,8 @@ floating_layout = layout.Floating(
 auto_fullscreen = True
 focus_on_window_activation = "smart"
 reconfigure_screens = True
-auto_minimize = False
-wl_input_rules = None
+auto_minimize = True
 wmname = "Qtile"
-
 
 
 #   _____  _____  _____  _____  _____                                                           
