@@ -1,5 +1,5 @@
 #!/bin/sh
-xrandr --output HDMI-0 --mode 1920x1080 --rate 165
+#xrandr --output OUTPUT --mode RESOLUTION --rate REFRESH_RATE
 setxkbmap fr
 picom &
 nitrogen --restore &

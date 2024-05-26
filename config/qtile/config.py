@@ -46,6 +46,8 @@ browser = "firefox"
 file_manager = "nautilus"
 launcher = "rofi -show drun"
 sceenshot_path = '~/Images/screenshots/'
+layouts_saved_file = '~/.config/qtile/layouts_saved.json'
+autostart_file = '~/.config/qtile/autostart.sh'
 
 floating_apps = [
     'nitrogen',
@@ -121,10 +123,19 @@ from os.path import expanduser
 from subprocess import run
 from os import system
 from datetime import datetime
-from libqtile import layout, qtile, hook, bar#, widget
+from libqtile import layout, qtile, hook, bar
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from qtile_extras import widget
+from json import dump, load
+
+
+#   _____  _____  _____  _____  _____  _____ 
+#  |   __|| __  ||     ||  |  ||  _  ||   __|
+#  |  |  ||    -||  |  ||  |  ||   __||__   |
+#  |_____||__|__||_____||_____||__|   |_____|
+
+groups = [Group(name) for name in groups_names]
 
 
 #   _____  _____  _____  _____  _____  _____  _____  _____  _____ 
@@ -132,7 +143,6 @@ from qtile_extras import widget
 #  |__   ||     ||  |  ||    -|  | |  |   --||  |  |  | |  |__   |
 #  |_____||__|__||_____||__|__|  |_|  |_____||_____|  |_|  |_____|
 
-groups = [Group(name) for name in groups_names]
 
 @lazy.function
 def screenshot(qtile, mode=0):
@@ -401,9 +411,9 @@ floating_layout = layout.Floating(
     ]
 )
 auto_fullscreen = True
-focus_on_window_activation = "smart"
+focus_on_window_activation = False
 reconfigure_screens = True
-auto_minimize = True
+auto_minimize = False
 wmname = "Qtile"
 
 
@@ -412,8 +422,34 @@ wmname = "Qtile"
 #  |     ||  |  ||  |  ||    -||__   |                                                          
 #  |__|__||_____||_____||__|__||_____| 
 
-@hook.subscribe.startup_once
-def startup_once():
-    run(expanduser("~/.config/qtile/autostart.sh"))
+ready = False
 
+@hook.subscribe.startup_once
+def _():
+    run(expanduser(autostart_file))
+
+@hook.subscribe.layout_change
+def _(layout, group):
+    global ready
+
+    if ready:
+        with open(expanduser(layouts_saved_file), 'r') as file:
+            layouts_saved = load(file)
+
+        layouts_saved[group.name] = layout.name
+
+        with open(expanduser(layouts_saved_file), 'w') as file:
+            dump(layouts_saved, file)
+
+@hook.subscribe.startup
+def _():
+    global ready
+
+    with open(expanduser(layouts_saved_file), 'r') as file:
+        layouts_saved = load(file)
+
+    for group in groups:
+        if layouts_saved.get(group.name):
+            qtile.groups_map.get(group.name).layout = layouts_saved[group.name]
     
+    ready = True
