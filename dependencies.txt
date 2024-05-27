@@ -1,0 +1,14 @@
+scrot
+xclip
+nitrogen
+qtile
+qtile_extras
+picom
+python-dbus-next
+playerctl
+libpulse
+neofetch
+rofi
+rofi-power-menu
+python-psutil
+python-pulsectl-asyncio
