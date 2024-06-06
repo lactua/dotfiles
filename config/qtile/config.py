@@ -123,7 +123,7 @@ widget_background_radius = 14
 
 from os.path import expanduser, exists
 from subprocess import run
-from os import system
+from os import system, mkdir
 from datetime import datetime
 from libqtile import layout, qtile, hook, bar
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
@@ -160,6 +160,9 @@ layouts = [getattr(layout, i)(**layout_theme) for i in layouts]
 #  |   __||  |  ||     || __  ||_   _||     ||  |  ||_   _||   __|
 #  |__   ||     ||  |  ||    -|  | |  |   --||  |  |  | |  |__   |
 #  |_____||__|__||_____||__|__|  |_|  |_____||_____|  |_|  |_____|
+
+if not exists(expanduser(sceenshot_path)):
+    mkdir(expanduser(sceenshot_path))
 
 def guess(apps):
     for app in apps:
