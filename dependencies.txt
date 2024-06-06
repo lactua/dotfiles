@@ -13,3 +13,4 @@ rofi-power-menu
 python-psutil
 python-pulsectl-asyncio
 dunst
+alsa-utils
