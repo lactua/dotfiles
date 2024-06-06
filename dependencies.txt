@@ -2,7 +2,7 @@ scrot
 xclip
 nitrogen
 qtile
-qtile_extras
+qtile-extras
 picom
 python-dbus-next
 playerctl
@@ -13,4 +13,3 @@ rofi-power-menu
 python-psutil
 python-pulsectl-asyncio
 dunst
-kitty
