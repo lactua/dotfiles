@@ -31,10 +31,6 @@ I made the qtile configuration in a way that almost everything is easly tweakabl
 
 ## Usage
 
-Here's the completed markdown readme based on the provided Python configuration for Qtile key bindings:
-
----
-
 ### Shortcuts
 
 Note that shortcuts can be changed in the qtile configuration.
