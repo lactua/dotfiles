@@ -41,11 +41,12 @@ theme = {
 # General
 
 mod = "mod4"
-terminal = "kitty"
-browser = "firefox"
-file_manager = "nautilus"
+terminal = None # guess if None
+browser = None # guess if None
+file_manager = None # guess if None
 launcher = "rofi -show drun"
-sceenshot_path = '~/Images/screenshots/'
+powermenu = "rofi -show menu -modi 'menu:rofi-power-menu --choices=shutdown/reboot/suspend'"
+sceenshot_path = '~/Images/screenshots/' # creates if donesn't exists
 layouts_saved_file = '~/.config/qtile/layouts_saved.json'
 autostart_file = '~/.config/qtile/autostart.sh'
 
@@ -70,11 +71,11 @@ groups_names = map(str, range(1, groups_count + 1)) # '1234..' to groups_count
 # Uncomment to enable layout
 layouts = [
     "Columns",
-    "VerticalTile",
     "RatioTile",
     "MonadWide",
     "Max",
-    "Floating",
+    # "Floating",
+    # "VerticalTile",
     # "Stack",
     # "Bsp",
     # "Matrix",
@@ -88,6 +89,7 @@ layouts_margin = 10
 layouts_border_width = 5
 layouts_border_color = theme['surface1']
 layouts_border_focus_color = theme['accent']
+layouts_border_on_single = True
 
 
 
@@ -110,7 +112,7 @@ widget_padding = 10
 widget_background_y_padding = 5
 widget_background_x_padding = 0
 widget_background_color = theme['background1']
-widget_background_opacity = 1.0
+widget_background_opacity = 0.7
 widget_background_radius = 14
 
 
@@ -119,7 +121,7 @@ widget_background_radius = 14
 
 
 
-from os.path import expanduser
+from os.path import expanduser, exists
 from subprocess import run
 from os import system
 from datetime import datetime
@@ -138,11 +140,63 @@ from json import dump, load
 groups = [Group(name) for name in groups_names]
 
 
+#   __     _____  __ __  _____  _____  _____  _____                                             
+#  |  |   |  _  ||  |  ||     ||  |  ||_   _||   __|                                            
+#  |  |__ |     ||_   _||  |  ||  |  |  | |  |__   |                                            
+#  |_____||__|__|  |_|  |_____||_____|  |_|  |_____|  
+
+layout_theme = {
+    "border_width": layouts_border_width,
+    "margin": layouts_margin,
+    "border_focus": layouts_border_focus_color,
+    "border_normal": layouts_border_color,
+    "border_on_single": layouts_border_on_single
+}
+
+layouts = [getattr(layout, i)(**layout_theme) for i in layouts]
+
+
 #   _____  _____  _____  _____  _____  _____  _____  _____  _____ 
 #  |   __||  |  ||     || __  ||_   _||     ||  |  ||_   _||   __|
 #  |__   ||     ||  |  ||    -|  | |  |   --||  |  |  | |  |__   |
 #  |_____||__|__||_____||__|__|  |_|  |_____||_____|  |_|  |_____|
 
+def guess(apps):
+    for app in apps:
+        if exists(f'/bin/{app}'): break
+
+    return app
+
+if not terminal:
+    terminal = guess([
+        'alacritty',
+        'kgx',
+        'kconsole',
+        'xterm',
+        'urxvt',
+        'kitty',
+        'st'
+    ])
+
+if not browser:
+    browser = guess([
+        'firefox',
+        'chrome',
+        'chromium',
+        'librewolf',
+        'vivaldi',
+        'waterfox',
+        'brave'
+    ])
+
+if not file_manager:
+    file_manager = guess([
+        'thunar',
+        'pcmanfm',
+        'pcmanfm-gtk3',
+        'nautilus',
+        'dolphin'
+    ])        
 
 @lazy.function
 def screenshot(qtile, mode=0):
@@ -187,6 +241,7 @@ keys = [
     Key([mod], "Space", lazy.spawn(launcher), desc="Launch launcher"),
     Key([mod], "b", lazy.spawn(browser), desc="Launch browser"),
     Key([mod], "e", lazy.spawn(file_manager), desc="Launch file manager"),
+    Key(["control", "mod1"], "Delete", lazy.spawn(powermenu), desc="Launch powermenu"),
     
     # Qtile
     
@@ -202,6 +257,7 @@ keys = [
 
     Key([mod], "l", lazy.next_layout(), desc="Toggle between layouts"),
     Key([mod, "shift"], 'l', lazy.prev_layout(), desc="Previous layout"),
+    *[Key([mod, "control"], groups_keys[index], lazy.group.setlayout(layout.name), desc=f"Switch to the {layout.name} layout") for index, layout in enumerate(layouts)],
 
     # Groups
 
@@ -209,25 +265,7 @@ keys = [
     Key([mod, "mod1"], "left", lazy.screen.prev_group(), desc="Go to previous group"),
     *[Key([mod], groups_keys[index], lazy.group[group.name].toscreen(), desc=f"Switch to the {group.name} group") for index, group in enumerate(groups)],
     *[Key([mod, "shift"], groups_keys[index], lazy.window.togroup(group.name, switch_group=True), desc=f"Move focused window to the {group.name} group") for index, group in enumerate(groups)],
-
 ]
-
-
-
-#   __     _____  __ __  _____  _____  _____  _____                                             
-#  |  |   |  _  ||  |  ||     ||  |  ||_   _||   __|                                            
-#  |  |__ |     ||_   _||  |  ||  |  |  | |  |__   |                                            
-#  |_____||__|__|  |_|  |_____||_____|  |_|  |_____|  
-
-layout_theme = {
-    "border_width": layouts_border_width,
-    "margin": layouts_margin,
-    "border_focus": layouts_border_focus_color,
-    "border_normal": layouts_border_color,
-}
-
-layouts = [getattr(layout, i)(**layout_theme) for i in layouts]
-
 
 
 #   _____  _____  _____  _____  _____  _____  _____                                             
@@ -325,8 +363,10 @@ right = [
     widget.Volume(
         step=2,
         fmt=volume,
+        mouse_callbacks={'Button1':lazy.spawn('pactl set-sink-mute @DEFAULT_SINK@ toggle')},
         update_interval=0.01,
         limit_max_volume=True,
+        volume_app="pavucontrol",
         decorations=[widget.decorations.RectDecoration(**default_background)],
     ),
 
@@ -338,7 +378,7 @@ right = [
     widget.TextBox(
         '⏻',
         mouse_callbacks={
-            'Button1': lazy.spawn("rofi -show menu -modi 'menu:rofi-power-menu --choices=shutdown/reboot/suspend/logout'")
+            'Button1': lazy.spawn(powermenu)
         },
         decorations=[widget.decorations.RectDecoration(**default_background, extrawidth=3)],
     ),
@@ -399,6 +439,7 @@ bring_front_click = True
 floats_kept_above = True
 cursor_warp = False
 floating_layout = layout.Floating(
+    **layout_theme,
     float_rules=[
         *layout.Floating.default_float_rules,
         Match(wm_class="confirmreset"),  # gitk
@@ -411,7 +452,7 @@ floating_layout = layout.Floating(
     ]
 )
 auto_fullscreen = True
-focus_on_window_activation = False
+focus_on_window_activation = "smart"
 reconfigure_screens = True
 auto_minimize = False
 wmname = "Qtile"

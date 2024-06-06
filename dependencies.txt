@@ -12,3 +12,5 @@ rofi
 rofi-power-menu
 python-psutil
 python-pulsectl-asyncio
+dunst
+kitty
