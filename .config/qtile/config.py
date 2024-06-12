@@ -193,7 +193,6 @@ if not file_manager:
     file_manager = guess([
         'thunar',
         'pcmanfm',
-        'pcmanfm-gtk3',
         'nautilus',
         'dolphin'
     ])        
@@ -242,7 +241,6 @@ keys = [
     Key([mod], "b", lazy.spawn(browser), desc="Launch browser"),
     Key([mod], "e", lazy.spawn(file_manager), desc="Launch file manager"),
     Key(["control", "mod1"], "Delete", lazy.spawn(powermenu), desc="Launch powermenu"),
-    Key([mod], "j", lazy.spawncmd(), desc="aaa"),
     
     # Qtile
     
@@ -335,8 +333,6 @@ left = [
             'Button3': lazy.prev_layout()
         },
     ),
-
-    widget.Prompt(),
 ]
 
 right = [

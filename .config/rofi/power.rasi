@@ -8,7 +8,6 @@
     fg-col2: #f38ba8;
     grey: #6c7086;
 
-    width: 600;
     font: "Firacode Nerd Font 14";
 }
 
