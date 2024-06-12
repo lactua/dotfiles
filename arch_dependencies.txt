@@ -3,7 +3,6 @@ xclip
 nitrogen
 qtile
 qtile-extras
-picom
 python-dbus-next
 playerctl
 neofetch
