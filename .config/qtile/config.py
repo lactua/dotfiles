@@ -112,7 +112,7 @@ widget_padding = 10
 widget_background_y_padding = 5
 widget_background_x_padding = 0
 widget_background_color = theme['background1']
-widget_background_opacity = 0.7
+widget_background_opacity = 0.55
 widget_background_radius = 14
 
 
@@ -242,6 +242,7 @@ keys = [
     Key([mod], "b", lazy.spawn(browser), desc="Launch browser"),
     Key([mod], "e", lazy.spawn(file_manager), desc="Launch file manager"),
     Key(["control", "mod1"], "Delete", lazy.spawn(powermenu), desc="Launch powermenu"),
+    Key([mod], "j", lazy.spawncmd(), desc="aaa"),
     
     # Qtile
     
@@ -334,6 +335,8 @@ left = [
             'Button3': lazy.prev_layout()
         },
     ),
+
+    widget.Prompt(),
 ]
 
 right = [

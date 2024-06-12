@@ -15,8 +15,8 @@
 window {
 	location: east;
 	anchor: east;
-	width: 120;
-	x-offset: -15px;
+	width: 125;
+	x-offset: -25px;
 	background-color: @bg-col;
 	border: 5px solid;
 	border-radius: 22;

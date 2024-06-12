@@ -1,17 +1,14 @@
 configuration{
-    modi: "run,drun,window";
-    icon-theme: "Oranchelo";
+    modi: "drun";
+    icon-theme: "Papirus-Dark";
     show-icons: true;
-    terminal: "alacritty";
+    terminal: "kitty";
     drun-display-format: "{icon} {name}";
     location: 0;
     disable-history: false;
-    hide-scrollbar: true;
-    display-drun: "   Apps ";
-    display-run: "   Run ";
-    display-window: "   Window";
-    display-Network: " 󰤨  Network";
-    sidebar-mode: true;
+    hide-scrollbar: false;
+    display-drun: "    Run  ";
+    sidebar-mode: false;
 }
 
 @theme "catppuccin-mocha"
