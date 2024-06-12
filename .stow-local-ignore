@@ -1,5 +1,4 @@
 .git
-scripts
 README.md
-**/__pycache__/
-*.txt
+__pycache__/
+\.txt$
