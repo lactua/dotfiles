@@ -26,7 +26,7 @@ In order to have animations, you have to build and install the [pijulius picom f
 
 ### Using stow to install the dotfiles
 ```sh
-stow . --adopt
+stow .
 ```
 
 ## Configuration
