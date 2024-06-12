@@ -45,7 +45,7 @@ terminal = None # guess if None
 browser = None # guess if None
 file_manager = None # guess if None
 launcher = "rofi -show drun"
-powermenu = "rofi -show menu -modi 'menu:rofi-power-menu --choices=shutdown/reboot/suspend'"
+powermenu = "rofi -show menu -modi 'menu:~/.local/share/rofi/scripts/rofi-power-menu --choices=shutdown/reboot/suspend/logout' -config ~/.config/rofi/power.rasi"
 sceenshot_path = '~/Images/screenshots/' # creates if donesn't exists
 layouts_saved_file = '~/.config/qtile/layouts_saved.json'
 autostart_file = '~/.config/qtile/autostart.sh'
@@ -96,7 +96,7 @@ layouts_border_on_single = True
 # Top bar
 
 bar_top_margin = 10
-bar_bottom_margin = 0
+bar_bottom_margin = 10
 bar_left_margin = 10
 bar_right_margin = 10
 bar_size = 37
@@ -123,7 +123,7 @@ widget_background_radius = 14
 
 from os.path import expanduser, exists
 from subprocess import run
-from os import system, makedirs
+from os import system
 from datetime import datetime
 from libqtile import layout, qtile, hook, bar
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
@@ -160,9 +160,6 @@ layouts = [getattr(layout, i)(**layout_theme) for i in layouts]
 #  |   __||  |  ||     || __  ||_   _||     ||  |  ||_   _||   __|
 #  |__   ||     ||  |  ||    -|  | |  |   --||  |  |  | |  |__   |
 #  |_____||__|__||_____||__|__|  |_|  |_____||_____|  |_|  |_____|
-
-if not exists(expanduser(sceenshot_path)):
-    makedirs(expanduser(sceenshot_path))
 
 def guess(apps):
     for app in apps:
@@ -276,15 +273,6 @@ keys = [
 #  |__   ||   --||    -||   __||   __|| | | ||__   |                                            
 #  |_____||_____||__|__||_____||_____||_|___||_____|
 
-widget_defaults = dict(
-    font="Opensans",
-    foreground=theme['text'],
-    fontsize=13,
-    padding=widget_padding,
-)
-
-extension_defaults = widget_defaults.copy()
-
 default_background = {
     "colour": widget_background_color + hex(int(widget_background_opacity*255))[2:],
     "radius": widget_background_radius,
@@ -317,6 +305,16 @@ def volume(output):
     else:
         return output
 
+widget_defaults = dict(
+    font="Opensans",
+    foreground=theme['text'],
+    fontsize=13,
+    padding=widget_padding,
+    decorations=[widget.decorations.RectDecoration(**default_background)]
+)
+
+extension_defaults = widget_defaults.copy()
+
 left = [
     widget.GroupBox(
         disable_drag=True,
@@ -326,7 +324,6 @@ left = [
         active=theme['white'],
         block_highlight_text_color=theme['yellow'],
         padding=7,
-        decorations=[widget.decorations.RectDecoration(**default_background)],
         fmt='●'
     ),
 
@@ -336,7 +333,6 @@ left = [
             'Button2': lambda: None,
             'Button3': lazy.prev_layout()
         },
-        decorations=[widget.decorations.RectDecoration(**default_background)],
     ),
 ]
 
@@ -344,7 +340,6 @@ right = [
     widget.CPU(
         format="{load_percent}%",
         fmt="󰍛   {}",
-        decorations=[widget.decorations.RectDecoration(**default_background)],
     ),
         
     [
@@ -352,14 +347,12 @@ right = [
             measure_mem="G",
             measure_swap="G",
             format="   {MemUsed: .2f}{mm} /{MemTotal: .2f}{mm}",
-            decorations=[widget.decorations.RectDecoration(**default_background)],
         ),
 
         widget.Memory(
             measure_mem="G",
             measure_swap="G",
             format="🖴 {SwapUsed: .2f}{ms} /{SwapTotal: .2f}{ms}",
-            decorations=[widget.decorations.RectDecoration(**default_background)],
         ),
     ],
 
@@ -370,12 +363,10 @@ right = [
         update_interval=0.01,
         limit_max_volume=True,
         volume_app="pavucontrol",
-        decorations=[widget.decorations.RectDecoration(**default_background)],
     ),
 
     widget.Clock(
         format="%A %d %B %Y %H:%M",
-        decorations=[widget.decorations.RectDecoration(**default_background)],
     ),
 
     widget.TextBox(
@@ -388,10 +379,10 @@ right = [
 ]
 
 for index in range(1, 2*len(left)-1, 2):
-    left.insert(index, widget.Spacer(length=widget_gap))
+    left.insert(index, widget.Spacer(length=widget_gap, decorations=[]))
 
 for index in range(1, 2*len(right)-1, 2):
-    right.insert(index, widget.Spacer(length=widget_gap))
+    right.insert(index, widget.Spacer(length=widget_gap, decorations=[]))
 
 for widget_group in filter(lambda g: isinstance(g, list), left):
     index = left.index(widget_group)
@@ -406,10 +397,10 @@ for widget_group in filter(lambda g: isinstance(g, list), right):
 screens = [
     Screen(
         top=bar.Bar(
-            widgets=[widget.Spacer(length=widget_left_offset)] + left + [widget.WindowName(foreground="#00000000", fmt="")] + right + [widget.Spacer(length=widget_right_offset)],
+            widgets=[widget.Spacer(length=widget_left_offset, decorations=[])] + left + [widget.WindowName(foreground="#00000000", fmt="", decorations=[])] + right + [widget.Spacer(length=widget_right_offset, decorations=[])],
             size=bar_size,
             background = bar_background_color + hex(int(bar_background_opacity*255))[2:],
-            margin = [bar_top_margin, bar_right_margin, bar_bottom_margin, bar_left_margin],
+            margin = [bar_top_margin, bar_right_margin, bar_bottom_margin-layouts_margin, bar_left_margin],
             opacity = bar_global_opacity
         ),
     ),
@@ -438,7 +429,7 @@ mouse = [
 dgroups_key_binder = None
 dgroups_app_rules = []
 follow_mouse_focus = True
-bring_front_click = True
+bring_front_click = "floating_only"
 floats_kept_above = True
 cursor_warp = False
 floating_layout = layout.Floating(
@@ -455,7 +446,7 @@ floating_layout = layout.Floating(
     ]
 )
 auto_fullscreen = True
-focus_on_window_activation = "smart"
+focus_on_window_activation = False
 reconfigure_screens = True
 auto_minimize = False
 wmname = "Qtile"

@@ -1,30 +1,35 @@
 # Qtile dotfiles
 
 ## Installation
+First, clone the repository and cd into the clone using `git clone https://github.com/lactua/dotfiles; cd dotfiles`
 
-### Arch Linux
+### Installing dependencies
 
-#### Yay
+#### Arch
 ```sh
-git clone https://github.com/lactua/dotfiles
-cd dotfiles
-cat dependencies.txt | yay -S -
-cp -r config/* ~/.config
+cat arch_dependencies.txt | yay -S --needed -
 ```
 
-#### Paru
+#### Others
+
+##### Base packages
+Use your favorite package manager to install the packages in `dependencies.txt`
+
+##### Qtile python modules
 ```sh
-git clone https://github.com/lactua/dotfiles
-cd dotfiles
-cat dependencies.txt | paru -S -
-cp -r config/* ~/.config
+pip install -r python_dependencies.txt
 ```
 
-### Others
-Clone this repository and install packages from `dependencies.txt`, note that some of these packages could not be included in your package manager repositories. Then copy the dotfiles configs to your local user config by running `cp -r config/* ~/.config`
+
+### Building and installing the pijulius picom fork
+In order to have animations, you have to build and install the [pijulius picom fork](https://github.com/pijulius/picom). If you don't want these animations just install the regular picom version.
+
+### Using stow to install the dotfiles
+```sh
+stow . --adopt
+```
 
 ## Configuration
-
 I made the qtile configuration in a way that almost everything is easly tweakable without any python or qtile knowledge. Just edit the variables at the start of the config in the **variables** category.
 
 **Important** : This dotfiles is initially made for azerty keyboards so by default on a qwerty keyboard the workspaces changing keys won't work. To make them work on azerty uncomment the 63 line and comment the 64.

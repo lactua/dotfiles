@@ -1,0 +1,5 @@
+{
+    "Alt-/": "lua:comment.comment",
+    "Ctrl-d": "command:tree",
+    "CtrlUnderscore": "lua:comment.comment",
+}
