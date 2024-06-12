@@ -1,4 +1,7 @@
 .git
+.gitignore
 README.md
-__pycache__/
-\.txt$
+__pycache__
+arch_dependencies.txt
+python_dependencies.txt
+dependencies.txt

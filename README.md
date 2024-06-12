@@ -1,7 +1,7 @@
 # Qtile dotfiles
 
 ## Installation
-First, clone the repository and cd into the clone using `git clone https://github.com/lactua/dotfiles; cd dotfiles`
+First, clone the repository **IN YOUR HOME DIRECTORY** and cd into the clone using `git clone https://github.com/lactua/dotfiles ~/Dotfiles; cd ~/Dotfiles`
 
 ### Installing dependencies
 
