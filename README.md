@@ -1,7 +1,7 @@
 # Qtile dotfiles
 
 ## Installation
-First, clone the repository **IN YOUR HOME DIRECTORY** and cd into the clone using `git clone https://github.com/lactua/dotfiles ~/Dotfiles; cd ~/Dotfiles`
+First, clone the repository **IN YOUR HOME DIRECTORY** and cd into the clone using `git clone https://github.com/lactua/dotfiles ~/.dots; cd ~/.dots`
 
 ### Installing dependencies
 
@@ -25,8 +25,15 @@ pip install -r python_dependencies.txt
 In order to have animations, you have to build and install the [pijulius picom fork](https://github.com/pijulius/picom). If you don't want these animations just install the regular picom version.
 
 ### Using stow to install the dotfiles
+**Make sure that you removed every config file in your ``~/.config` that this dotfiles provides before running the following command**
 ```sh
 stow .
+```
+
+## Updating
+Using `stow` allows us to quickly and easly update our dotfiles by running 
+```sh
+cd ~/.dots; git pull origin
 ```
 
 ## Configuration

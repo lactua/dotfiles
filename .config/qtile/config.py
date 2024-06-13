@@ -101,6 +101,7 @@ bar_left_margin = 10
 bar_right_margin = 10
 bar_size = 37
 bar_background_color = theme['background0']
+bar_foreground_color = theme['text']
 bar_background_opacity = 0.85
 bar_global_opacity = 1.0
 
@@ -111,8 +112,8 @@ widget_padding = 10
 
 widget_background_y_padding = 5
 widget_background_x_padding = 0
-widget_background_color = theme['background1']
-widget_background_opacity = 0.55
+widget_background_color = theme['background0']
+widget_background_opacity = 1.0
 widget_background_radius = 14
 
 
@@ -306,7 +307,7 @@ def volume(output):
 
 widget_defaults = dict(
     font="Opensans",
-    foreground=theme['text'],
+    foreground=bar_foreground_color,
     fontsize=13,
     padding=widget_padding,
     decorations=[widget.decorations.RectDecoration(**default_background)]
@@ -320,7 +321,7 @@ left = [
         borderwidth=0,
         fontsize=15,
         inactive=theme['black'],
-        active=theme['white'],
+        active=bar_foreground_color,
         block_highlight_text_color=theme['yellow'],
         padding=7,
         fmt='●'
