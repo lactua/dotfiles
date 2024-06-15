@@ -41,10 +41,10 @@ declare -A actions
 actions[lockscreen]="loginctl lock-session ${XDG_SESSION_ID-}"
 #actions[switchuser]="???"
 actions[logout]="qtile cmd-obj -o cmd -f shutdown"
-actions[suspend]="systemctl suspend"
-actions[hibernate]="systemctl hibernate"
-actions[reboot]="systemctl reboot"
-actions[shutdown]="systemctl poweroff"
+actions[suspend]="sudo systemctl suspend"
+actions[hibernate]="sudo systemctl hibernate"
+actions[reboot]="sudo systemctl reboot"
+actions[shutdown]="sudo systemctl poweroff"
 
 # By default, ask for confirmation for actions that are irreversible
 confirmations=()

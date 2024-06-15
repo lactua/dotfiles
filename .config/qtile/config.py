@@ -112,8 +112,8 @@ widget_padding = 10
 
 widget_background_y_padding = 5
 widget_background_x_padding = 0
-widget_background_color = theme['background0']
-widget_background_opacity = 1.0
+widget_background_color = theme['background1']
+widget_background_opacity = 0.9
 widget_background_radius = 14
 
 
@@ -204,6 +204,10 @@ def screenshot(qtile, mode=0):
     system(f"scrot {'-s' if mode == 1 else ''} {file_path}")
     system(f"xclip -selection clipboard -t image/png -i {file_path}")
 
+@lazy.function
+def toggle_max_layout():
+    pass
+
 keys = [
 
     # Window Management
@@ -222,7 +226,9 @@ keys = [
     Key([mod, "control"], "up", lazy.layout.grow_up(), desc="Grow window up"),
     Key([mod], "r", lazy.layout.normalize(), desc="Reset all window sizes"),
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
-    Key([mod], "x", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window",),
+    Key([mod], "m", toggle_max_layout(), desc="Toggle the max layout"),
+    Key([mod, "shift"], "m", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window",),
+    
     Key([mod], "f", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
     Key([mod], "Tab", lazy.layout.next(), desc="Move window focus to other window"),
 
