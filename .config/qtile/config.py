@@ -246,7 +246,6 @@ keys = [
     Key([mod], "h", lazy.layout.shrink(), desc="Shrink window"),
     Key([mod], "r", lazy.layout.normalize(), desc="Reset all window sizes"),
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
-    Key([mod], "m", toggle_max_layout(), desc="Toggle the max layout"),
     Key([mod, "shift"], "m", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window",),
     
     Key([mod], "f", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
