@@ -160,6 +160,20 @@ layouts_tweaks = {
         "fair": True,
         "num_columns": 2,
     },
+    "MonadTall": {
+        "ratio": 0.57,
+        "min_ratio": 0.5,
+        "max_ratio": 0.7,
+        "change_size": 20,
+        "change_ratio": 0.01,
+    },
+    "MonadWide": {
+        "ratio": 0.55,
+        "min_ratio": 0.45,
+        "max_ratio": 0.7,
+        "change_size": 20,
+        "change_ratio": 0.02,
+    }
 }
 
 layouts = [getattr(layout, i)(**(layout_theme|layouts_tweaks.get(i, {}))) for i in layouts]
