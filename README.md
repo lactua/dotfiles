@@ -65,7 +65,7 @@ Note that shortcuts can be changed in the qtile configuration.
 |Super + Control + up|Grow window up|
 |Super + r|Reset all window sizes|
 |Super + q|Kill focused window|
-|Super + x|Toggle fullscreen on the focused window|
+|Super + m|Toggle fullscreen on the focused window|
 |Super + f|Toggle floating on the focused window|
 |Super + Tab|Move window focus to other window|
 
