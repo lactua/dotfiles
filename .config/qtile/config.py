@@ -121,6 +121,10 @@ widget_background_radius = 14
 
 
 
+#   _____       _  _   
+#  |     | ___ |_|| |_ 
+#  |-   -||   || ||  _|
+#  |_____||_|_||_||_|  
 
 from os.path import expanduser, exists
 from subprocess import run
@@ -131,6 +135,46 @@ from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from qtile_extras import widget
 from json import dump, load
+
+if not exists(path := expanduser(layouts_saved_file)):
+    with open(path, 'w') as file:
+        file.write('{}')
+
+def guess(apps):
+    for app in apps:
+        if exists(f'/bin/{app}'): break
+
+    return app
+
+if not terminal:
+    terminal = guess([
+        'alacritty',
+        'kgx',
+        'kconsole',
+        'xterm',
+        'urxvt',
+        'kitty',
+        'st'
+    ])
+
+if not browser:
+    browser = guess([
+        'firefox',
+        'chrome',
+        'chromium',
+        'librewolf',
+        'vivaldi',
+        'waterfox',
+        'brave'
+    ])
+
+if not file_manager:
+    file_manager = guess([
+        'thunar',
+        'pcmanfm',
+        'nautilus',
+        'dolphin'
+    ])        
 
 
 #   _____  _____  _____  _____  _____  _____ 
@@ -184,42 +228,6 @@ layouts = [getattr(layout, i)(**(layout_theme|layouts_tweaks.get(i, {}))) for i 
 #  |__   ||     ||  |  ||    -|  | |  |   --||  |  |  | |  |__   |
 #  |_____||__|__||_____||__|__|  |_|  |_____||_____|  |_|  |_____|
 
-def guess(apps):
-    for app in apps:
-        if exists(f'/bin/{app}'): break
-
-    return app
-
-if not terminal:
-    terminal = guess([
-        'alacritty',
-        'kgx',
-        'kconsole',
-        'xterm',
-        'urxvt',
-        'kitty',
-        'st'
-    ])
-
-if not browser:
-    browser = guess([
-        'firefox',
-        'chrome',
-        'chromium',
-        'librewolf',
-        'vivaldi',
-        'waterfox',
-        'brave'
-    ])
-
-if not file_manager:
-    file_manager = guess([
-        'thunar',
-        'pcmanfm',
-        'nautilus',
-        'dolphin'
-    ])        
-
 @lazy.function
 def screenshot(qtile, mode=0):
     file_path = datetime.now().strftime(f"{expanduser(sceenshot_path)}%d-%m-%Y-%H-%M-%S.jpg")
@@ -246,7 +254,7 @@ keys = [
     Key([mod], "h", lazy.layout.shrink(), desc="Shrink window"),
     Key([mod], "r", lazy.layout.normalize(), desc="Reset all window sizes"),
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
-    Key([mod, "shift"], "m", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window",),
+    Key([mod], "m", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window",),
     
     Key([mod], "f", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
     Key([mod], "Tab", lazy.layout.next(), desc="Move window focus to other window"),
