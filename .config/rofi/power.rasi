@@ -38,10 +38,11 @@ listview {
 	layout: vertical;
 	spacing: 15px;
 	background-color: transparent;
+	border: 0px solid;
 }
 
 element {
-	background-color: transparent;
+	background-color: inherit;
 	text-color: @fg-col;
 	padding: 5px;
 	border-radius: 5px;
