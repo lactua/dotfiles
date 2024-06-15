@@ -71,7 +71,8 @@ groups_names = map(str, range(1, groups_count + 1)) # '1234..' to groups_count
 # Uncomment to enable layout
 layouts = [
     "Columns",
-    "RatioTile",
+    # "RatioTile",
+    "MonadTall",
     "MonadWide",
     "Max",
     # "Floating",
@@ -79,7 +80,6 @@ layouts = [
     # "Stack",
     # "Bsp",
     # "Matrix",
-    # "MonadTall",
     # "Tile",
     # "TreeTab",
     # "Zoomy",
@@ -154,7 +154,15 @@ layout_theme = {
     "border_on_single": layouts_border_on_single
 }
 
-layouts = [getattr(layout, i)(**layout_theme) for i in layouts]
+layouts_tweaks = {
+    "Columns": {
+        "grow_amount": 5,
+        "fair": True,
+        "num_columns": 2,
+    },
+}
+
+layouts = [getattr(layout, i)(**(layout_theme|layouts_tweaks.get(i, {}))) for i in layouts]
 
 
 #   _____  _____  _____  _____  _____  _____  _____  _____  _____ 
@@ -203,10 +211,6 @@ def screenshot(qtile, mode=0):
     file_path = datetime.now().strftime(f"{expanduser(sceenshot_path)}%d-%m-%Y-%H-%M-%S.jpg")
     system(f"scrot {'-s' if mode == 1 else ''} {file_path}")
     system(f"xclip -selection clipboard -t image/png -i {file_path}")
-
-@lazy.function
-def toggle_max_layout():
-    pass
 
 keys = [
 
@@ -264,7 +268,7 @@ keys = [
     Key([mod], "l", lazy.next_layout(), desc="Toggle between layouts"),
     Key([mod, "shift"], 'l', lazy.prev_layout(), desc="Previous layout"),
     *[Key([mod, "control"], groups_keys[index], lazy.group.setlayout(layout.name), desc=f"Switch to the {layout.name} layout") for index, layout in enumerate(layouts)],
-
+    
     # Groups
 
     Key([mod, "mod1"], "right", lazy.screen.next_group(), desc="Go to next group"),
