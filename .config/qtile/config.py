@@ -130,7 +130,7 @@ from os.path import expanduser, exists
 from subprocess import run
 from os import system
 from datetime import datetime
-from libqtile import layout, qtile, hook, bar
+from libqtile import layout, qtile, hook, bar, core
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from qtile_extras import widget
@@ -229,7 +229,7 @@ layouts = [getattr(layout, i)(**(layout_theme|layouts_tweaks.get(i, {}))) for i 
 #  |_____||__|__||_____||__|__|  |_|  |_____||_____|  |_|  |_____|
 
 @lazy.function
-def screenshot(qtile, mode=0):
+def screenshot(_qtile, mode=0):
     file_path = datetime.now().strftime(f"{expanduser(sceenshot_path)}%d-%m-%Y-%H-%M-%S.jpg")
     system(f"scrot {'-s' if mode == 1 else ''} {file_path}")
     system(f"xclip -selection clipboard -t image/png -i {file_path}")
@@ -446,10 +446,62 @@ screens = [
 #  | | | ||  |  ||  |  ||__   ||   __|                                                          
 #  |_|_|_||_____||_____||_____||_____|
 
+DPX = 50 # Distance needed to grow one time on the X axis
+DPY = 25 # Distance needed to grow one time on the Y axis
+
+last = {
+    'x': 0,
+    'y': 0,
+    'client': ''
+}
+
+@lazy.function
+def resizeClientColumnsLayout(_qtile, x, y):
+    global last
+
+    _layout = _qtile.current_group.layout
+
+    if _layout.name != "columns":
+        return
+
+    _column = _layout.columns[_layout.current]
+    _client = _column.clients[_column.current]
+
+    if abs(last['x'] - x) >= 5 * DPX or abs(last['y'] - y) >= 5 * DPY or _client.name != last['client']: # If the window title changed or x, y anormally low -> reset last
+        last = {
+            'x': 0,
+            'y': 0,
+            'client': _client.name
+        }
+
+    delta_x = x - last['x']
+    delta_y = y - last['y']
+    
+    for _ in range(abs(delta_x) // DPX):
+        if delta_x < 0:
+            _layout.grow_left()
+        else:
+            _layout.grow_right()
+
+    for _ in range(abs(delta_y) // DPY):
+        if delta_y < 0:
+            _layout.grow_up()
+        else:
+            _layout.grow_down()
+    
+    if abs(delta_x) // DPX or abs(delta_y) >= DPY:
+        last = {
+            'x': x,
+            'y': y,
+            'client': _client.name
+        }
+
+
 mouse = [
     Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
     Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
     Click([mod], "Button2", lazy.window.bring_to_front()),
+    Drag([mod, "control"], "Button3", resizeClientColumnsLayout())
 ]
 
 
@@ -462,7 +514,7 @@ mouse = [
 dgroups_key_binder = None
 dgroups_app_rules = []
 follow_mouse_focus = True
-bring_front_click = "floating_only"
+bring_front_click = False
 floats_kept_above = True
 cursor_warp = False
 floating_layout = layout.Floating(
