@@ -13,19 +13,10 @@
 # Color Theme
 
 theme = {
-    'text': '#cdd6f4',
-    'subtext1': '#bac2de',
-    'subtext0': '#a6adc8',
-    'overlay2': '#9399b2',
-    'overlay1': '#7f849c',
-    'overlay0': '#6c7086',
-    'surface2': '#585b70',
-    'surface1': '#45475a',
-    'surface0': '#313244',
-    'background0': '#1e1e2e',
-    'background1': '#181825',
-    'background2': '#11111b',
-    'accent': '#89b4fa',
+    'foreground': '#cdd6f4',
+    'lighter_background': '#45475a',
+    'background': '#1e1e2e',
+    'darker_background': '#181825',
     'black': '#45475A',
     'red': '#F38BA8',
     'green': '#A6E3A1',
@@ -47,24 +38,25 @@ file_manager = None # guess if None
 launcher = "rofi -show drun"
 powermenu = "rofi -show menu -modi 'menu:~/.local/share/rofi/scripts/rofi-power-menu --choices=shutdown/reboot/suspend/logout' -config ~/.config/rofi/power.rasi"
 sceenshot_path = '~/Images/screenshots/' # creates if donesn't exists
-layouts_saved_file = '~/.config/qtile/layouts_saved.json'
+layouts_saved_file = '~/.config/qtile/layouts_saved.json' # creates if donesn't exists
 autostart_file = '~/.config/qtile/autostart.sh'
 
 floating_apps = [
     'nitrogen',
 ]
 
-
+# Uncomment the first line for qwerty, the second for azerty
+# num_keys = "123456789"
+num_keys = "ampersand", "eacute", "quotedbl", "apostrophe", "parenleft", "minus", "egrave", "underscore", "ccedilla", "agrave"
 
 # Groups
 
 groups_count = 5 # Up to nine
-# Uncomment the first line for qwerty, the second for azerty
-# groups_keys = "123456789"
-groups_keys = "ampersand", "eacute", "quotedbl", "apostrophe", "parenleft", "minus", "egrave", "underscore", "ccedilla", "agrave"
-groups_names = map(str, range(1, groups_count + 1)) # '1234..' to groups_count
-
-
+groups_names = list(map(str, range(1, groups_count + 1))) # Groups names **IN THE PROGRAM**, you probably don't need to change it
+groups_labels = ['●' for _ in range(groups_count)] # How the groups are named in the top bar
+# Alternatives :
+# groups_labels = [str(i) for i in range(1, groups_count + 1)]
+# groups_labels = ['ENT', 'CDE', 'WRK', 'GMS', 'OTH']
 
 # Layouts
 
@@ -87,8 +79,8 @@ layouts = [
 
 layouts_margin = 10
 layouts_border_width = 5
-layouts_border_color = theme['surface1']
-layouts_border_focus_color = theme['accent']
+layouts_border_color = theme['lighter_background']
+layouts_border_focus_color = theme['blue']
 layouts_border_on_single = True
 
 
@@ -100,10 +92,12 @@ bar_bottom_margin = 10
 bar_left_margin = 10
 bar_right_margin = 10
 bar_size = 37
-bar_background_color = theme['background0']
-bar_foreground_color = theme['text']
+bar_background_color = theme['background']
+bar_foreground_color = theme['foreground']
 bar_background_opacity = 0.85
 bar_global_opacity = 1.0
+bar_font = "Opensans"
+bar_fontsize = 13
 
 widget_gap = 17
 widget_left_offset = 15
@@ -112,7 +106,7 @@ widget_padding = 10
 
 widget_background_y_padding = 5
 widget_background_x_padding = 0
-widget_background_color = theme['background1']
+widget_background_color = theme['darker_background']
 widget_background_opacity = 0.9
 widget_background_radius = 14
 
@@ -201,7 +195,7 @@ layout_theme = {
 layouts_tweaks = {
     "Columns": {
         "grow_amount": 5,
-        "fair": True,
+        "fair": False,
         "num_columns": 2,
     },
     "MonadTall": {
@@ -215,7 +209,7 @@ layouts_tweaks = {
         "ratio": 0.55,
         "min_ratio": 0.45,
         "max_ratio": 0.7,
-        "change_size": 20,
+        "change_size": 35,
         "change_ratio": 0.02,
     }
 }
@@ -290,14 +284,14 @@ keys = [
 
     Key([mod], "l", lazy.next_layout(), desc="Toggle between layouts"),
     Key([mod, "shift"], 'l', lazy.prev_layout(), desc="Previous layout"),
-    *[Key([mod, "control"], groups_keys[index], lazy.group.setlayout(layout.name), desc=f"Switch to the {layout.name} layout") for index, layout in enumerate(layouts)],
+    *[Key([mod, "control"], num_keys[index], lazy.group.setlayout(layout.name), desc=f"Switch to the {layout.name} layout") for index, layout in enumerate(layouts)],
     
     # Groups
 
     Key([mod, "mod1"], "right", lazy.screen.next_group(), desc="Go to next group"),
     Key([mod, "mod1"], "left", lazy.screen.prev_group(), desc="Go to previous group"),
-    *[Key([mod], groups_keys[index], lazy.group[group.name].toscreen(), desc=f"Switch to the {group.name} group") for index, group in enumerate(groups)],
-    *[Key([mod, "shift"], groups_keys[index], lazy.window.togroup(group.name, switch_group=True), desc=f"Move focused window to the {group.name} group") for index, group in enumerate(groups)],
+    *[Key([mod], num_keys[index], lazy.group[group.name].toscreen(), desc=f"Switch to the {group.name} group") for index, group in enumerate(groups)],
+    *[Key([mod, "shift"], num_keys[index], lazy.window.togroup(group.name, switch_group=True), desc=f"Move focused window to the {group.name} group") for index, group in enumerate(groups)],
 ]
 
 
@@ -320,6 +314,14 @@ class WidgetTweaker:
         self.format = func
 
 @WidgetTweaker
+def groupBox(output):
+    index = groups_names.index(output)
+    label = groups_labels[index]
+
+    return label
+
+
+@WidgetTweaker
 def volume(output):
     if output.endswith('%'):
         volume = int(output[:-1])
@@ -339,9 +341,9 @@ def volume(output):
         return output
 
 widget_defaults = dict(
-    font="Opensans",
+    font=bar_font,
     foreground=bar_foreground_color,
-    fontsize=13,
+    fontsize=bar_fontsize,
     padding=widget_padding,
     decorations=[widget.decorations.RectDecoration(**default_background)]
 )
@@ -350,6 +352,7 @@ extension_defaults = widget_defaults.copy()
 
 left = [
     widget.GroupBox(
+        font=f"{bar_font} Bold",
         disable_drag=True,
         borderwidth=0,
         fontsize=15,
@@ -357,7 +360,7 @@ left = [
         active=bar_foreground_color,
         block_highlight_text_color=theme['yellow'],
         padding=7,
-        fmt='●'
+        fmt=groupBox#'●'
     ),
 
     widget.CurrentLayout(
