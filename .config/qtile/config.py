@@ -49,14 +49,16 @@ floating_apps = [
 # num_keys = "123456789"
 num_keys = "ampersand", "eacute", "quotedbl", "apostrophe", "parenleft", "minus", "egrave", "underscore", "ccedilla", "agrave"
 
+
 # Groups
 
-groups_count = 5 # Up to nine
+groups_count = 5
 groups_names = list(map(str, range(1, groups_count + 1))) # Groups names **IN THE PROGRAM**, you probably don't need to change it
 groups_labels = ['●' for _ in range(groups_count)] # How the groups are named in the top bar
 # Alternatives :
 # groups_labels = [str(i) for i in range(1, groups_count + 1)]
 # groups_labels = ['ENT', 'CDE', 'WRK', 'GMS', 'OTH']
+
 
 # Layouts
 
@@ -109,9 +111,6 @@ widget_background_x_padding = 0
 widget_background_color = theme['darker_background']
 widget_background_opacity = 0.9
 widget_background_radius = 14
-
-
-
 
 
 
