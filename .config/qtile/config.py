@@ -37,9 +37,10 @@ browser = None # guess if None
 file_manager = None # guess if None
 launcher = "rofi -show drun"
 powermenu = "rofi -show menu -modi 'menu:~/.local/share/rofi/scripts/rofi-power-menu --choices=shutdown/reboot/suspend/logout' -config ~/.config/rofi/power.rasi"
-sceenshot_path = '~/Images/screenshots/' # creates if donesn't exists
-layouts_saved_file = '~/.config/qtile/layouts_saved.json' # creates if donesn't exists
-autostart_file = '~/.config/qtile/autostart.sh'
+screenshots_path = "~/Images/screenshots/" # creates if donesn't exists
+layouts_saved_file = "~/.config/qtile/layouts_saved.json" # creates if donesn't exists
+autostart_file = "~/.config/qtile/autostart.sh"
+wallpapers_path = "~/.local/share/wallpapers/" # creates if donesn't exists
 
 floating_apps = [
     'nitrogen',
@@ -119,9 +120,9 @@ widget_background_radius = 14
 #  |-   -||   || ||  _|
 #  |_____||_|_||_||_|  
 
-from os.path import expanduser, exists
+from os.path import expanduser, exists, normpath
 from subprocess import run
-from os import system
+from os import system, listdir, makedirs
 from datetime import datetime
 from libqtile import layout, qtile, hook, bar, core
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
@@ -132,6 +133,12 @@ from json import dump, load
 if not exists(path := expanduser(layouts_saved_file)):
     with open(path, 'w') as file:
         file.write('{}')
+
+if not exists(expanduser(screenshots_path)):
+    makedirs(screenshots_path)
+
+if not exists(expanduser(wallpapers_path)):
+    makedirs(wallpapers_path)
 
 def guess(apps):
     for app in apps:
@@ -223,9 +230,35 @@ layouts = [getattr(layout, i)(**(layout_theme|layouts_tweaks.get(i, {}))) for i 
 
 @lazy.function
 def screenshot(_qtile, mode=0):
-    file_path = datetime.now().strftime(f"{expanduser(sceenshot_path)}%d-%m-%Y-%H-%M-%S.jpg")
+    file_path = datetime.now().strftime(f"{expanduser(screenshots_path)}%d-%m-%Y-%H-%M-%S.jpg")
     system(f"scrot {'-s' if mode == 1 else ''} {file_path}")
     system(f"xclip -selection clipboard -t image/png -i {file_path}")
+
+class Wallpaper:
+    wallpapers = listdir(expanduser(wallpapers_path))
+    mode = "zoom-fill"
+    current = 0
+
+    if exists(expanduser('~/.config/nitrogen/bg-saved.cfg')):
+        with open(expanduser('~/.config/nitrogen/bg-saved.cfg'), 'r') as file:
+            path = file.read().splitlines()[1].removeprefix('file=').strip() # Get saved background path
+
+        if normpath(path[::-1].split('/', 1)[1][::-1]) == normpath(expanduser(wallpapers_path)): # Checks if the background folder is wallpapers_path
+            current = wallpapers.index(path.split('/')[-1]) # Set the pointer on the saved background
+    
+    def set():
+        system(f'nitrogen --save --set-{Wallpaper.mode} {wallpapers_path}{Wallpaper.wallpapers[Wallpaper.current]}')
+
+    @lazy.function
+    def next(_qtile):
+        Wallpaper.current = (Wallpaper.current + 1) % len(Wallpaper.wallpapers)
+        Wallpaper.set()
+
+    @lazy.function
+    def previous(_qtile):
+        Wallpaper.current = (Wallpaper.current - 1) % len(Wallpaper.wallpapers)
+        Wallpaper.set()
+
 
 keys = [
 
@@ -276,8 +309,13 @@ keys = [
 
     # Screenshot
 
-    Key([], "Print", screenshot()),
-    Key(['mod1'], "Print", screenshot(mode=1)),
+    Key([], "Print", screenshot(), desc="Take a screenshot"),
+    Key(["mod1"], "Print", screenshot(mode=1), desc="Take a screenshot of a zone or a window"),
+
+    # Wallpapers
+
+    Key([mod], "w", Wallpaper.next(), desc="Next background"),
+    Key([mod, "shift"], "w", Wallpaper.previous(), desc="Previous background"),
     
     # Layouts
 
