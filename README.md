@@ -102,13 +102,19 @@ Note that shortcuts can be changed in the qtile configuration.
 |Key combination|Action|
 |:-|:-|
 |Print|Take a screenshot|
-|alt + Print|Take a screenshot in mode 1|
+|alt + Print|Take a screenshot of a zone or a window|
+
+#### Wallpapers
+|Key combination|Action|
+|:-|:-|
+|Super + w|Next wallpaper|
+|Super + shift + w|Previous wallpaper|
 
 #### Layouts
 
 |Key combination|Action|
 |:-|:-|
-|Super + l|Toggle between layouts|
+|Super + l|Next layouts|
 |Super + Shift + l|Previous layout|
 |Super + Control + [workspace]|Switch to the specified layout|
 
