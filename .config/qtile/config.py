@@ -120,7 +120,7 @@ widget_background_radius = 14
 #  |-   -||   || ||  _|
 #  |_____||_|_||_||_|  
 
-from os.path import expanduser, exists, normpath
+from os.path import expanduser, exists, normpath, getctime
 from subprocess import run
 from os import system, listdir, makedirs
 from datetime import datetime
@@ -236,6 +236,10 @@ def screenshot(_qtile, mode=0):
 
 class Wallpaper:
     wallpapers = listdir(expanduser(wallpapers_path))
+
+    wallpapers.sort(key=lambda w: getctime(f"{expanduser(wallpapers_path)}{w}")) # Sort by creation date (ngl idk if it's gonna be useful for you as you download everything at the same time)
+    # wallpapers.sort(key=str.lower) # sort by name
+
     mode = "zoom-fill"
     current = 0
 
