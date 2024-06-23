@@ -1,5 +1,10 @@
 # Qtile dotfiles
 
+## Screenshots
+![](./assets/screen1.png)
+![](./assets/screen2.png)
+![](./assets/screen3.png)
+
 ## Installation
 First, clone the repository **IN YOUR HOME DIRECTORY** and cd into the clone using `git clone https://github.com/lactua/dotfiles ~/.dots; cd ~/.dots`
 
