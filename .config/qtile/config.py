@@ -130,14 +130,19 @@ from libqtile.lazy import lazy
 from qtile_extras import widget
 from json import dump, load
 
-if not exists(path := expanduser(layouts_saved_file)):
+screenshots_path = expanduser(screenshots_path)
+layouts_saved_file = expanduser(layouts_saved_file)
+autostart_file = expanduser(autostart_file)
+wallpapers_path = expanduser(wallpapers_path)
+
+if not exists(path := layouts_saved_file):
     with open(path, 'w') as file:
         file.write('{}')
 
-if not exists(expanduser(screenshots_path)):
+if not exists(screenshots_path):
     makedirs(screenshots_path)
 
-if not exists(expanduser(wallpapers_path)):
+if not exists(wallpapers_path):
     makedirs(wallpapers_path)
 
 def guess(apps):
@@ -230,28 +235,44 @@ layouts = [getattr(layout, i)(**(layout_theme|layouts_tweaks.get(i, {}))) for i 
 
 @lazy.function
 def screenshot(_qtile, mode=0):
-    file_path = datetime.now().strftime(f"{expanduser(screenshots_path)}%d-%m-%Y-%H-%M-%S.jpg")
+    file_path = datetime.now().strftime(f"{screenshots_path}%d-%m-%Y-%H-%M-%S.jpg")
     system(f"scrot {'-s' if mode == 1 else ''} {file_path}")
     system(f"xclip -selection clipboard -t image/png -i {file_path}")
 
 class Wallpaper:
-    wallpapers = listdir(expanduser(wallpapers_path))
+    def formatName(name):
+        backslash = r"""\&~"#'{([|`^$*"""
 
-    wallpapers.sort(key=lambda w: getctime(f"{expanduser(wallpapers_path)}{w}")) # Sort by creation date (ngl idk if it's gonna be useful for you as you download everything at the same time)
-    # wallpapers.sort(key=str.lower) # sort by name
+        for c in backslash:
+            name = name.replace(c, '\\'+c)
+        
+        return name
 
-    mode = "zoom-fill"
-    current = 0
+    def restorePointer():
+        if exists(expanduser('~/.config/nitrogen/bg-saved.cfg')):
+            with open(expanduser('~/.config/nitrogen/bg-saved.cfg'), 'r') as file:
+                path = file.read().splitlines()[1].removeprefix('file=').strip() # Get saved background path
+                directory = normpath(path[::-1].split('/', 1)[1][::-1])
+                name = path.split('/')[-1]
 
-    if exists(expanduser('~/.config/nitrogen/bg-saved.cfg')):
-        with open(expanduser('~/.config/nitrogen/bg-saved.cfg'), 'r') as file:
-            path = file.read().splitlines()[1].removeprefix('file=').strip() # Get saved background path
+            if normpath(directory) == normpath(wallpapers_path) and name in Wallpaper.wallpapers: # Checks if the background folder is wallpapers_path is in wallpapers
+                Wallpaper.current = Wallpaper.wallpapers.index(name) # Set the pointer on the saved background
+                return
+        
+        Wallpaper.current = 0
+        return
 
-        if normpath(path[::-1].split('/', 1)[1][::-1]) == normpath(expanduser(wallpapers_path)): # Checks if the background folder is wallpapers_path
-            current = wallpapers.index(path.split('/')[-1]) # Set the pointer on the saved background
-    
+    def init():
+        Wallpaper.wallpapers = listdir(wallpapers_path)
+        Wallpaper.wallpapers.sort(key=lambda w: getctime(f"{wallpapers_path}{w}")) # Sort by creation date
+        # wallpapers.sort(key=str.lower) # sort by name
+
+        Wallpaper.mode = "zoom-fill"
+
+        Wallpaper.restorePointer()
+
     def set():
-        system(f'nitrogen --save --set-{Wallpaper.mode} {wallpapers_path}{Wallpaper.wallpapers[Wallpaper.current]}')
+        system(f'nitrogen --save --set-{Wallpaper.mode} {wallpapers_path}{Wallpaper.formatName(Wallpaper.wallpapers[Wallpaper.current])}')
 
     @lazy.function
     def next(_qtile):
@@ -262,6 +283,8 @@ class Wallpaper:
     def previous(_qtile):
         Wallpaper.current = (Wallpaper.current - 1) % len(Wallpaper.wallpapers)
         Wallpaper.set()
+    
+Wallpaper.init()
 
 
 keys = [
@@ -590,26 +613,26 @@ ready = False
 
 @hook.subscribe.startup_once
 def _():
-    run(expanduser(autostart_file))
+    run(autostart_file)
 
 @hook.subscribe.layout_change
 def _(layout, group):
     global ready
 
     if ready:
-        with open(expanduser(layouts_saved_file), 'r') as file:
+        with open(layouts_saved_file, 'r') as file:
             layouts_saved = load(file)
 
         layouts_saved[group.name] = layout.name
 
-        with open(expanduser(layouts_saved_file), 'w') as file:
+        with open(layouts_saved_file, 'w') as file:
             dump(layouts_saved, file)
 
 @hook.subscribe.startup
 def _():
     global ready
 
-    with open(expanduser(layouts_saved_file), 'r') as file:
+    with open(layouts_saved_file, 'r') as file:
         layouts_saved = load(file)
 
     for group in groups:
