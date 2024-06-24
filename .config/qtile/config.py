@@ -66,6 +66,7 @@ groups_labels = ['●' for _ in range(groups_count)] # How the groups are named 
 # Uncomment to enable layout
 layouts = [
     "Columns",
+    "Bsp",
     # "RatioTile",
     "MonadTall",
     "MonadWide",
@@ -73,7 +74,6 @@ layouts = [
     # "Floating",
     # "VerticalTile",
     # "Stack",
-    # "Bsp",
     # "Matrix",
     # "Tile",
     # "TreeTab",
@@ -222,7 +222,10 @@ layouts_tweaks = {
         "max_ratio": 0.7,
         "change_size": 35,
         "change_ratio": 0.02,
-    }
+    },
+    "Bsp": {
+        "fair": False,
+    },
 }
 
 layouts = [getattr(layout, i)(**(layout_theme|layouts_tweaks.get(i, {}))) for i in layouts]
@@ -598,7 +601,7 @@ floating_layout = layout.Floating(
     ]
 )
 auto_fullscreen = True
-focus_on_window_activation = False
+focus_on_window_activation = "smart"
 reconfigure_screens = True
 auto_minimize = False
 wmname = "Qtile"
