@@ -38,13 +38,13 @@ stow .
 ## Updating
 Using `stow` allows us to quickly and easly update our dotfiles by running 
 ```sh
-cd ~/.dots; git pull origin
+cd ~/.dots; git pull origin; stow .
 ```
 
 ## Configuration
 I made the qtile configuration in a way that almost everything is easly tweakable without any python or qtile knowledge. Just edit the variables at the start of the config in the **variables** category.
 
-**Important** : This dotfiles is initially made for azerty keyboards so by default on a qwerty keyboard the workspaces changing keys won't work. To make them work on azerty uncomment the 63 line and comment the 64.
+**Important** : This dotfiles is initially made for azerty keyboards so by default on a qwerty keyboard the numbers keys won't work.
 
 ## Usage
 
