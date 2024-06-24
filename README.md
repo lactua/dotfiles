@@ -32,7 +32,7 @@ In order to have animations, you have to build and install the [pijulius picom f
 ### Using stow to install the dotfiles
 **Make sure that you removed every config file in your ``~/.config` that this dotfiles provides before running the following command**
 ```sh
-stow .
+cd ~/.dots; stow .
 ```
 
 ## Updating
