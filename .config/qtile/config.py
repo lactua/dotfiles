@@ -37,10 +37,10 @@ browser = None # guess if None
 file_manager = None # guess if None
 launcher = "rofi -show drun"
 powermenu = "rofi -show menu -modi 'menu:~/.local/share/rofi/scripts/rofi-power-menu --choices=shutdown/reboot/suspend/logout' -config ~/.config/rofi/power.rasi"
-screenshots_path = "~/Images/screenshots/" # creates if donesn't exists
-layouts_saved_file = "~/.config/qtile/layouts_saved.json" # creates if donesn't exists
+screenshots_path = "~/Images/screenshots/" # creates if doesn't exists
+layouts_saved_file = "~/.config/qtile/layouts_saved.json" # creates if doesn't exists
 autostart_file = "~/.config/qtile/autostart.sh"
-wallpapers_path = "~/.local/share/wallpapers/" # creates if donesn't exists
+wallpapers_path = "~/.local/share/wallpapers/" # creates if doesn't exists
 
 floating_apps = [
     'nitrogen',
@@ -448,12 +448,10 @@ right = [
     [
         widget.Memory(
             measure_mem="G",
-            measure_swap="G",
             format="   {MemUsed: .2f}{mm} /{MemTotal: .2f}{mm}",
         ),
 
         widget.Memory(
-            measure_mem="G",
             measure_swap="G",
             format="🖴 {SwapUsed: .2f}{ms} /{SwapTotal: .2f}{ms}",
         ),
