@@ -53,19 +53,19 @@ num_keys = "ampersand", "eacute", "quotedbl", "apostrophe", "parenleft", "minus"
 
 # Groups
 
-groups_count = 5
+groups_count = 7
 groups_names = list(map(str, range(1, groups_count + 1))) # Groups names **IN THE PROGRAM**, you probably don't need to change it
 groups_labels = ['●' for _ in range(groups_count)] # How the groups are named in the top bar
 # Alternatives :
 # groups_labels = [str(i) for i in range(1, groups_count + 1)]
-# groups_labels = ['ENT', 'CDE', 'WRK', 'GMS', 'OTH']
+# groups_labels = ['what', 'ever', 'you', 'want']
 
 
 # Layouts
 
 # Uncomment to enable layout
 layouts = [
-    "Columns",
+    # "Columns",
     "Bsp",
     # "RatioTile",
     "MonadTall",
@@ -99,7 +99,7 @@ bar_background_color = theme['background']
 bar_foreground_color = theme['foreground']
 bar_background_opacity = 0.85
 bar_global_opacity = 1.0
-bar_font = "Opensans"
+bar_font = "Opensans Regular"
 bar_fontsize = 13
 
 widget_gap = 17
@@ -427,7 +427,7 @@ left = [
         active=bar_foreground_color,
         block_highlight_text_color=theme['yellow'],
         padding=7,
-        fmt=groupBox#'●'
+        fmt=groupBox
     ),
 
     widget.CurrentLayout(
