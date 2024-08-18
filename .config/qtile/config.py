@@ -65,8 +65,8 @@ groups_labels = ['●' for _ in range(groups_count)] # How the groups are named 
 
 # Uncomment to enable layout
 layouts = [
-    # "Columns",
-    "Bsp",
+    "Columns",
+    # "Bsp",
     # "RatioTile",
     "MonadTall",
     "MonadWide",
