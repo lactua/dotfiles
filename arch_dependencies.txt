@@ -12,3 +12,4 @@ dunst
 alsa-utils
 kitty
 stow
+picom

@@ -25,10 +25,6 @@ Use your favorite package manager to install the packages in `dependencies.txt`
 pip install -r python_dependencies.txt
 ```
 
-
-### Building and installing the pijulius picom fork
-In order to have animations, you have to build and install the [pijulius picom fork](https://github.com/pijulius/picom). If you don't want these animations just install the regular picom version.
-
 ### Using stow to install the dotfiles
 **Make sure that you removed every config file in your ``~/.config` that this dotfiles provides before running the following command**
 ```sh
