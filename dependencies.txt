@@ -2,11 +2,14 @@ scrot
 xclip
 nitrogen
 qtile
-picom
+qtile-extras
+python-dbus-next
 playerctl
 neofetch
 rofi
+python-psutil
 dunst
 alsa-utils
 kitty
 stow
+picom-git
