@@ -6,7 +6,7 @@
 ![](./assets/screen3.png)
 
 ## Installation (On arch)
-run `install.py` and make sure to select your favorite aur helper in --aurhelper
+run `install.py` and make sure to select your favorite aur helper in `--aurhelper`
 ```
 usage: install.py [-h] [--aurhelper AURHELPER] [--source SOURCE] [--target TARGET] [--skipchecking]
 
