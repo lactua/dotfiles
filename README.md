@@ -5,36 +5,18 @@
 ![](./assets/screen2.png)
 ![](./assets/screen3.png)
 
-## Installation
-First, clone the repository **IN YOUR HOME DIRECTORY** and cd into the clone using `git clone https://github.com/lactua/dotfiles ~/.dots; cd ~/.dots`
-
-### Installing dependencies
-
-#### Arch
-```sh
-cat arch_dependencies.txt | yay -S --needed -
+## Installation (On arch)
+run `install.py` and make sure to select your favorite aur helper in --aurhelper
 ```
+usage: install.py [-h] [--aurhelper AURHELPER] [--source SOURCE] [--target TARGET] [--skipchecking]
 
-#### Others
-
-##### Base packages
-Use your favorite package manager to install the packages in `dependencies.txt`
-
-##### Qtile python modules
-```sh
-pip install -r python_dependencies.txt
-```
-
-### Using stow to install the dotfiles
-**Make sure that you removed every config file in your ``~/.config` that this dotfiles provides before running the following command**
-```sh
-cd ~/.dots; stow .
-```
-
-## Updating
-Using `stow` allows us to quickly and easly update our dotfiles by running 
-```sh
-cd ~/.dots; git pull origin; stow .
+options:
+  -h, --help            show this help message and exit
+  --aurhelper AURHELPER
+                        AUR helper, by default 'yay'
+  --source SOURCE       Dotfiles source
+  --target TARGET       Dotfiles target, by default home directory
+  --skipchecking        Skip existing files checking
 ```
 
 ## Configuration
