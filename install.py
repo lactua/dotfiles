@@ -5,6 +5,10 @@ from os.path import exists, normpath, relpath, islink, isdir, lexists
 from argparse import ArgumentParser
 import typing
 
+def log(message):
+    if args["verbose"]:
+        print(f"{message}")
+
 def parseArgs(**kwargs):
     parser = ArgumentParser()
 
@@ -30,20 +34,24 @@ def existingFilesChecking():
             if islink(directory):
                 input(f"Press enter to unlink existing link: {directory} ...")
                 unlink(directory)
+                log(f"Unlinked existing link: {directory}")
             
             if exists(directory) and not isdir(directory):
                 input(f"Press enter to delete existing file: {directory} ...")
                 remove(directory)
+                log(f"Deleted existing file: {directory}")
 
         for file in map(lambda f: f"{args['target']}/{rpath}/{f}", files):
             if islink(file):
                 input(f"Press enter to unlink existing link: {file} ...")
                 unlink(file)
+                log(f"Unlinked existing link: {file}")
                 continue
 
             if exists(file):
                 input(f"Press enter to delete existing file: {file} ...")
                 remove(file)
+                log(f"Deleted existing file: {file}")
 
 def setupLinks():
     for path, dirs, files in walk(args["source"]):
@@ -52,15 +60,17 @@ def setupLinks():
         for directory in map(lambda d: f"{args['target']}/{rpath}/{d}", dirs):
             if not exists(directory):
                 mkdir(directory)
+                log(f"Created directory: {directory}")
 
         for file in files:
             if not exists(file):
                 copy(f"{path}/{file}", f"{args['target']}/{rpath}/{file}")
+                log(f"Copied file: {file} to {args['target']}/{rpath}/{file}")
 
 def main():
     global args
 
-    args = parseArgs(aurhelper={"type": str, "default": "yay", "help": "AUR helper, by default 'yay'"}, source={"type": str, "default":"./source", "help": "Dotfiles source"} ,target={"type": str, "default": getenv("HOME"), "help": "Dotfiles target, by default home directory"}, skipchecking={"action": "store_true", "default": False, "help": "Skip existing files checking"}, skipdeps={"action": "store_true", "default": False, "help": "Skip installing dependencies"})
+    args = parseArgs(aurhelper={"type": str, "default": "yay", "help": "AUR helper, by default 'yay'"}, verbose={"action": "store_true", "default": False, "help": "Display more information"}, source={"type": str, "default":"./source", "help": "Dotfiles source"} ,target={"type": str, "default": getenv("HOME"), "help": "Dotfiles target, by default home directory"}, skipchecking={"action": "store_true", "default": False, "help": "Skip existing files checking"}, skipdeps={"action": "store_true", "default": False, "help": "Skip installing dependencies"})
 
     if not args["skipdeps"]:
         installDependencies()
