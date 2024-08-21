@@ -17,6 +17,7 @@ options:
   --source SOURCE       Dotfiles source
   --target TARGET       Dotfiles target, by default home directory
   --skipchecking        Skip existing files checking
+  --skipdeps            Skip installing dependencies
 ```
 
 After installing, do not delete the dotfile and do not move it

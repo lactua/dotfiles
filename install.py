@@ -46,9 +46,10 @@ def setupStow():
 def main():
     global args
 
-    args = parseArgs(aurhelper={"type": str, "default": "yay", "help": "AUR helper, by default 'yay'"}, source={"type": str, "default":"./source", "help": "Dotfiles source"} ,target={"type": str, "default": getenv("HOME"), "help": "Dotfiles target, by default home directory"}, skipchecking={"action": "store_true", "default": False, "help": "Skip existing files checking"})
+    args = parseArgs(aurhelper={"type": str, "default": "yay", "help": "AUR helper, by default 'yay'"}, source={"type": str, "default":"./source", "help": "Dotfiles source"} ,target={"type": str, "default": getenv("HOME"), "help": "Dotfiles target, by default home directory"}, skipchecking={"action": "store_true", "default": False, "help": "Skip existing files checking"}, skipdeps={"action": "store_true", "default": False, "help": "Skip installing dependencies"})
 
-    installDependencies()
+    if not args["skipdeps"]:
+        installDependencies()
 
     if not args["skipchecking"]:
         existingFilesChecking()
