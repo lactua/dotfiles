@@ -37,7 +37,7 @@ browser = None # guess if None
 file_manager = None # guess if None
 launcher = "rofi -show drun"
 powermenu = "rofi -show menu -modi 'menu:~/.local/share/rofi/scripts/rofi-power-menu --choices=shutdown/reboot/suspend/logout' -config ~/.config/rofi/power.rasi"
-screenshots_path = "~/Images/screenshots/" # creates if doesn't exists
+screenshots_path = "~/Pictures/screenshots/" # creates if doesn't exists
 layouts_saved_file = "~/.config/qtile/layouts_saved.json" # creates if doesn't exists
 autostart_file = "~/.config/qtile/autostart.sh"
 wallpapers_path = "~/.local/share/wallpapers/" # creates if doesn't exists
