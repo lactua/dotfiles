@@ -22,6 +22,9 @@ options:
 
 After installing, do not delete the dotfile and do not move it
 
+## Update
+Once the dotfiles is installed you can update it easly by `git pull` the repo and run the `install.py` script
+
 ## Configuration
 I made the qtile configuration in a way that almost everything is easly tweakable without any python or qtile knowledge. Just edit the variables at the start of the config in the **variables** category.
 
