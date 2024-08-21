@@ -1,0 +1,103 @@
+* {
+    bg-col:  #1e1e2e;
+    bg-col-light: #1e1e2e;
+    border-col: #1e1e2e;
+    selected-col: #1e1e2e;
+    blue: #89b4fa;
+    fg-col: #cdd6f4;
+    fg-col2: #f38ba8;
+    grey: #6c7086;
+
+    font: "Firacode Nerd Font 14";
+}
+
+window {
+	location: east;
+	anchor: east;
+	width: 125;
+	x-offset: -25px;
+	background-color: @bg-col;
+	border: 5px solid;
+	border-radius: 22;
+	border-color: @blue;
+}
+
+mainbox {
+	spacing: 15px;
+	padding: 15px;
+	background-color: transparent;
+	children: ["listview"];
+}
+
+listview {
+	columns: 1;
+	lines: 4;
+	cycle: false;
+	dynamic: true;
+	scrollbar: false;
+	layout: vertical;
+	spacing: 15px;
+	background-color: transparent;
+	border: 0px solid;
+}
+
+element {
+	background-color: inherit;
+	text-color: @fg-col;
+	padding: 5px;
+	border-radius: 5px;
+}
+
+element-text {
+	background-color: inherit;
+	text-color: inherit;
+	font: "Firacode Nerd Font 35";
+	align-items: center;
+	vertical-align: 0.5;
+	horizontal-align: 0.5;
+}
+
+element.normal.normal {
+	background-color: transparent;
+	text-color: @fg-col;
+}
+
+element.normal.urgent {
+	background-color: transparent;
+	text-color: @fg-col;
+}
+
+element.normal.active {
+	background-color: transparent;
+	text-color: @fg-col;
+}
+
+element.selected.normal {
+	background-color: @blue;
+	text-color: @bg-col;
+}
+
+element.selected.urgent {
+	background-color: @blue;
+	text-color: @bg-col;
+}
+
+element.selected.active {
+	background-color: @blue;
+	text-color: @bg-col;
+}
+
+element.alternate.normal {
+	background-color: transparent;
+	text-color: @fg-col;
+}
+
+element.alternate.urgent {
+	background-color: transparent;
+	text-color: @fg-col;
+}
+
+element.alternate.active {
+	background-color: transparent;
+	text-color: @fg-col;
+}
