@@ -1,6 +1,6 @@
 #!/bin/python3
-from os import system as run, getenv, walk, mkdir, remove, unlink
-from os.path import exists, normpath, relpath, islink
+from os import system as run, getenv, walk, mkdir, remove, unlink, link
+from os.path import exists, normpath, relpath, islink, isdir, lexists
 from argparse import ArgumentParser
 import typing
 
@@ -29,6 +29,10 @@ def existingFilesChecking():
             if islink(directory):
                 input(f"Press enter to unlink existing link: {directory} ...")
                 unlink(directory)
+            
+            if exists(directory) and not isdir(directory):
+                input(f"Press enter to delete existing file: {directory} ...")
+                remove(directory)
 
         for file in map(lambda f: f"{args['target']}/{rpath}/{f}", files):
             if islink(file):
@@ -40,8 +44,17 @@ def existingFilesChecking():
                 input(f"Press enter to delete existing file: {file} ...")
                 remove(file)
 
-def setupStow():
-    run(f"stow -d {args['source']} -t {args['target']} .")
+def setupLinks():
+    for path, dirs, files in walk(args["source"]):
+        rpath = relpath(path, args["source"])
+
+        for directory in map(lambda d: f"{args['target']}/{rpath}/{d}", dirs):
+            if not exists(directory):
+                mkdir(directory)
+
+        for file in map(lambda f: f"{args['target']}/{rpath}/{f}", files):
+            if not exists(file):
+                link(f"{normpath(path)}/{file}", file)
 
 def main():
     global args
@@ -54,7 +67,7 @@ def main():
     if not args["skipchecking"]:
         existingFilesChecking()
 
-    setupStow()
+    setupLinks()
 
 if __name__ == "__main__":
     main()
