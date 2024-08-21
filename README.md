@@ -20,8 +20,6 @@ options:
   --skipdeps            Skip installing dependencies
 ```
 
-After installing, do not delete the dotfile and do not move it
-
 ## Update
 Once the dotfiles is installed you can update it easly by `git pull` the repo and run the `install.py` script
 

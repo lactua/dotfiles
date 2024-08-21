@@ -1,5 +1,6 @@
 #!/bin/python3
-from os import system as run, getenv, walk, mkdir, remove, unlink, link
+from os import system as run, getenv, walk, mkdir, remove, unlink
+from shutil import copy
 from os.path import exists, normpath, relpath, islink, isdir, lexists
 from argparse import ArgumentParser
 import typing
@@ -52,9 +53,9 @@ def setupLinks():
             if not exists(directory):
                 mkdir(directory)
 
-        for file in map(lambda f: f"{args['target']}/{rpath}/{f}", files):
+        for file in files:
             if not exists(file):
-                link(f"{normpath(path)}/{file}", file)
+                copy(f"{path}/{file}", f"{args['target']}/{rpath}/{file}")
 
 def main():
     global args
