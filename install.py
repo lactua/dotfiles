@@ -1,5 +1,5 @@
 #!/bin/python3
-from os import system as run, getenv, walk, mkdir, remove, unlink
+from os import system as run, getenv, walk, mkdir, remove, unlink, link
 from shutil import copy
 from os.path import exists, normpath, relpath, islink, isdir, lexists
 from argparse import ArgumentParser
@@ -53,7 +53,7 @@ def existingFilesChecking():
                 remove(file)
                 log(f"Deleted existing file: {file}")
 
-def setupLinks():
+def setup():
     for path, dirs, files in walk(args["source"]):
         rpath = relpath(path, args["source"])
 
@@ -64,13 +64,17 @@ def setupLinks():
 
         for file in files:
             if not exists(file):
-                copy(f"{path}/{file}", f"{args['target']}/{rpath}/{file}")
-                log(f"Copied file: {file} to {args['target']}/{rpath}/{file}")
+                if args["link"]:
+                    link(f"{path}/{file}", f"{args['target']}/{rpath}/{file}")
+                    log(f"Linked file: {file} to {args['target']}/{rpath}/{file}")
+                else:
+                    copy(f"{path}/{file}", f"{args['target']}/{rpath}/{file}")
+                    log(f"Copied file: {file} to {args['target']}/{rpath}/{file}")
 
 def main():
     global args
 
-    args = parseArgs(aurhelper={"type": str, "default": "yay", "help": "AUR helper, by default 'yay'"}, verbose={"action": "store_true", "default": False, "help": "Display more information"}, source={"type": str, "default":"./source", "help": "Dotfiles source"} ,target={"type": str, "default": getenv("HOME"), "help": "Dotfiles target, by default home directory"}, skipchecking={"action": "store_true", "default": False, "help": "Skip existing files checking"}, skipdeps={"action": "store_true", "default": False, "help": "Skip installing dependencies"})
+    args = parseArgs(aurhelper={"type": str, "default": "yay", "help": "AUR helper, by default 'yay'"}, verbose={"action": "store_true", "default": False, "help": "Display more information"}, source={"type": str, "default":"./source", "help": "Dotfiles source"} ,target={"type": str, "default": getenv("HOME"), "help": "Dotfiles target, by default home directory"}, link={"action": "store_true", "default": False, "help": "Creates symbolic links instead of copy files"}, skipchecking={"action": "store_true", "default": False, "help": "Skip existing files checking"}, skipdeps={"action": "store_true", "default": False, "help": "Skip installing dependencies"})
 
     if not args["skipdeps"]:
         installDependencies()
@@ -78,7 +82,7 @@ def main():
     if not args["skipchecking"]:
         existingFilesChecking()
 
-    setupLinks()
+    setup()
 
 if __name__ == "__main__":
     main()
