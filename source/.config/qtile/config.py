@@ -100,6 +100,7 @@ bar_foreground_color = theme['foreground']
 bar_background_opacity = 0.85
 bar_global_opacity = 1.0
 bar_font = "Opensans Regular"
+bar_nerd_font = "JetbrainsMono Nerd Font"
 bar_fontsize = 13
 
 widget_gap = 17
@@ -373,7 +374,7 @@ default_background = {
     "filled": True,
     "padding_y": widget_background_y_padding,
     "padding_x": widget_background_x_padding,
-    "group": True
+    "group": True,
 }
 
 class WidgetTweaker:
@@ -446,15 +447,33 @@ right = [
     ),
         
     [
+        widget.TextBox(padding=3),
+
+        widget.TextBox(
+            " ",
+            font=bar_nerd_font,
+            padding=0
+        ),
+
         widget.Memory(
             measure_mem="G",
-            format="   {MemUsed: .2f}{mm} /{MemTotal: .2f}{mm}",
+            format="{MemUsed: .2f}{mm} /{MemTotal: .2f}{mm}",
+            padding=0
+        ),
+
+        widget.TextBox(
+            "   󰋊 ",
+            font=bar_nerd_font,
+            padding=0
         ),
 
         widget.Memory(
             measure_swap="G",
-            format="🖴 {SwapUsed: .2f}{ms} /{SwapTotal: .2f}{ms}",
+            format="{SwapUsed: .2f}{ms} /{SwapTotal: .2f}{ms}",
+            padding=0
         ),
+
+        widget.TextBox(padding=3),
     ],
 
     widget.Volume(
@@ -475,7 +494,7 @@ right = [
         mouse_callbacks={
             'Button1': lazy.spawn(powermenu)
         },
-        decorations=[widget.decorations.RectDecoration(**default_background, extrawidth=3)],
+        decorations=[widget.decorations.RectDecoration(**default_background | {"extrawidth": 3})],
     ),
 ]
 
