@@ -19,6 +19,8 @@ options:
   --skipchecking        Skip existing files checking
 ```
 
+After installing, do not delete the dotfile and do not move it
+
 ## Configuration
 I made the qtile configuration in a way that almost everything is easly tweakable without any python or qtile knowledge. Just edit the variables at the start of the config in the **variables** category.
 
