@@ -476,6 +476,8 @@ right = [
         widget.TextBox(padding=3),
     ],
 
+    widget.Battery(),
+
     widget.Volume(
         step=2,
         fmt=volume,
