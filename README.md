@@ -8,14 +8,16 @@
 ## Installation (On arch)
 run `install.py` and make sure to select your favorite aur helper in `--aurhelper`
 ```
-usage: install.py [-h] [--aurhelper AURHELPER] [--source SOURCE] [--target TARGET] [--skipchecking]
+usage: install.py [-h] [--aurhelper AURHELPER] [--verbose] [--source SOURCE] [--target TARGET] [--link] [--skipchecking] [--skipdeps]
 
 options:
   -h, --help            show this help message and exit
   --aurhelper AURHELPER
                         AUR helper, by default 'yay'
+  --verbose             Display more information
   --source SOURCE       Dotfiles source
   --target TARGET       Dotfiles target, by default home directory
+  --link                Creates symbolic links instead of copy files
   --skipchecking        Skip existing files checking
   --skipdeps            Skip installing dependencies
 ```
