@@ -27,29 +27,40 @@ def installDependencies():
     installPackages(dependencies)
 
 def existingFilesChecking():
+    do_for_all = False
+
     for path, dirs, files in walk(args["source"]):
+
         rpath = relpath(path, args["source"])
 
         for directory in map(lambda d: f"{args['target']}/{rpath}/{d}", dirs):
             if islink(directory):
-                input(f"Press enter to unlink existing link: {directory} ...")
+                if not do_for_all:
+                    if input(f"Press enter to unlink existing link: {directory} ... or type '*' to apply for all ") == "*":
+                        do_for_all = True
                 unlink(directory)
                 log(f"Unlinked existing link: {directory}")
             
             if exists(directory) and not isdir(directory):
-                input(f"Press enter to delete existing file: {directory} ...")
+                if not do_for_all:
+                    if input(f"Press enter to delete existing file: {directory} ...") == "*":
+                        do_for_all = True
                 remove(directory)
                 log(f"Deleted existing file: {directory}")
 
         for file in map(lambda f: f"{args['target']}/{rpath}/{f}", files):
             if islink(file):
-                input(f"Press enter to unlink existing link: {file} ...")
+                if not do_for_all:
+                    if input(f"Press enter to unlink existing link: {file} ... or type '*' to apply for all ") == "*":
+                        do_for_all = True
                 unlink(file)
                 log(f"Unlinked existing link: {file}")
                 continue
 
             if exists(file):
-                input(f"Press enter to delete existing file: {file} ...")
+                if not do_for_all:
+                    if input(f"Press enter to delete existing file: {file} ... or type '*' to apply for all ") == "*":
+                        do_for_all = True
                 remove(file)
                 log(f"Deleted existing file: {file}")
 
@@ -74,7 +85,15 @@ def setup():
 def main():
     global args
 
-    args = parseArgs(aurhelper={"type": str, "default": "yay", "help": "AUR helper, by default 'yay'"}, verbose={"action": "store_true", "default": False, "help": "Display more information"}, source={"type": str, "default":"./source", "help": "Dotfiles source"} ,target={"type": str, "default": getenv("HOME"), "help": "Dotfiles target, by default home directory"}, link={"action": "store_true", "default": False, "help": "Creates symbolic links instead of copy files"}, skipchecking={"action": "store_true", "default": False, "help": "Skip existing files checking"}, skipdeps={"action": "store_true", "default": False, "help": "Skip installing dependencies"})
+    args = parseArgs(
+        aurhelper={"type": str, "default": "yay", "help": "AUR helper, by default 'yay'"},
+        verbose={"action": "store_true", "default": False, "help": "Display more information"},
+        source={"type": str, "default":"./source", "help": "Dotfiles source"},
+        target={"type": str, "default": getenv("HOME"), "help": "Dotfiles target, by default home directory"},
+        link={"action": "store_true", "default": False, "help": "Creates symbolic links instead of copy files"},
+        skipchecking={"action": "store_true", "default": False, "help": "Skip existing files checking"},
+        skipdeps={"action": "store_true", "default": False, "help": "Skip installing dependencies"}
+    )
 
     if not args["skipdeps"]:
         installDependencies()
@@ -83,6 +102,8 @@ def main():
         existingFilesChecking()
 
     setup()
+
+    print("Sucessfully installed dotfiles! enjoy!")
 
 if __name__ == "__main__":
     main()
