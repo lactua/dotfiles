@@ -383,7 +383,7 @@ right = [
         mouse_callbacks={
             'Button1': lazy.spawn(powermenu)
         },
-        decorations=[widget.decorations.RectDecoration(**default_background | {"extrawidth": 3})],
+        decorations=[widget.decorations.RectDecoration(**default_background | {"extrawidth": 4})],
     ),
 ]
 
