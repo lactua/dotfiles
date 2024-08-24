@@ -1,5 +1,5 @@
 [global]
-frame_color = "#89b4fab0"
+frame_color = "#c4a7e7"
 separator_color= frame
 scale = 1.2
 icon_corner_radius = 5
@@ -12,14 +12,14 @@ corners = all
 corner_radius = 10
 
 [urgency_low]
-background = "#1e1e2eb0"
-foreground = "#cdd6f4"
+background = "#191724"
+foreground = "#e0def4"
 
 [urgency_normal]
-background = "#1e1e2eb0"
-foreground = "#cdd6f4"
+background = "#191724"
+foreground = "#e0def4"
 
 [urgency_critical]
-background = "#1e1e2eb0"
-foreground = "#cdd6f4"
-frame_color = "#fab387b0"
+background = "#191724b0"
+foreground = "#e0def4"
+frame_color = "#eb6f92"

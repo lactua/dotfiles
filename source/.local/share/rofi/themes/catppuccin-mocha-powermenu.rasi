@@ -1,12 +1,11 @@
 * {
-    bg-col:  #1e1e2e;
-    bg-col-light: #1e1e2e;
-    border-col: #1e1e2e;
-    selected-col: #1e1e2e;
-    blue: #89b4fa;
-    fg-col: #cdd6f4;
-    fg-col2: #f38ba8;
-    grey: #6c7086;
+    bg-col:  #191724;
+    bg-col-light: #1f1d2e;
+    border-col: #c4a7e7;
+    selected-col: #1f1d2e;
+    accent: #c4a7e7;
+    fg-col: #e0def4;
+    grey: #6e6a86;
 
     font: "Firacode Nerd Font 14";
 }
@@ -19,7 +18,7 @@ window {
 	background-color: @bg-col;
 	border: 5px solid;
 	border-radius: 22;
-	border-color: @blue;
+	border-color: @border-col;
 }
 
 mainbox {
@@ -73,17 +72,17 @@ element.normal.active {
 }
 
 element.selected.normal {
-	background-color: @blue;
+	background-color: @accent;
 	text-color: @bg-col;
 }
 
 element.selected.urgent {
-	background-color: @blue;
+	background-color: @accent;
 	text-color: @bg-col;
 }
 
 element.selected.active {
-	background-color: @blue;
+	background-color: @accent;
 	text-color: @bg-col;
 }
 

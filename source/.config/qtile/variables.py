@@ -1,6 +1,6 @@
 # Color Theme
-#                  vvvvvvvvvvvvvvvv  change this to change theme
-from themes import catppuccin_mocha as theme
+#                  vvvvvvvv  change this to change theme
+from themes import rosepine as theme
 
 # General
 
@@ -71,7 +71,7 @@ bar_right_margin = 10
 bar_size = 37
 bar_background_color = theme['background']
 bar_foreground_color = theme['foreground']
-bar_background_opacity = 0.85
+bar_background_opacity = 1.0
 bar_global_opacity = 1.0
 bar_font = "Opensans Regular"
 bar_nerd_font = "JetbrainsMono Nerd Font"
