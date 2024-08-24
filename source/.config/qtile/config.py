@@ -284,16 +284,16 @@ def volume(output):
         volume = int(output[:-1])
 
         icons = {
-            range(0, 33): '󰕿   ',
-            range(33, 66): '󰖀   ',
-            range(66, 101): '󰕾   '
+            range(0, 33): '󰕿 ',
+            range(33, 66): '󰖀 ',
+            range(66, 101): '󰕾 '
         }
 
         icon = icons[next(filter(lambda r: volume in r, icons.keys()))]
 
         return icon + output
     elif output == 'M':
-        return '󰕿   Muted'
+        return '󰕿 Muted'
     else:
         return output
 
@@ -321,7 +321,7 @@ left = [
     ),
 
     widget.CurrentLayout(
-        fmt="Current layout : {}",
+        fmt="Current layout: {}",
         mouse_callbacks={
             'Button2': lambda: None,
             'Button3': lazy.prev_layout()
@@ -332,38 +332,14 @@ left = [
 right = [
     widget.CPU(
         format="{load_percent}%",
-        fmt="󰍛   {}",
+        fmt="󰍛 {}",
     ),
-        
-    [
-        widget.TextBox(padding=3),
 
-        widget.TextBox(
-            " ",
-            font=bar_nerd_font,
-            padding=0
-        ),
-
-        widget.Memory(
-            measure_mem="G",
-            format="{MemUsed: .2f}{mm} /{MemTotal: .2f}{mm}",
-            padding=0
-        ),
-
-        widget.TextBox(
-            "   󰋊 ",
-            font=bar_nerd_font,
-            padding=0
-        ),
-
-        widget.Memory(
-            measure_swap="G",
-            format="{SwapUsed: .2f}{ms} /{SwapTotal: .2f}{ms}",
-            padding=0
-        ),
-
-        widget.TextBox(padding=3),
-    ],
+    widget.Memory(
+        measure_mem="G",
+        measure_swap="G",
+        format=" {MemUsed: .2f}{mm} /{MemTotal: .2f}{mm}   󰋊{SwapUsed: .2f}{ms} /{SwapTotal: .2f}{ms}",
+    ),
 
     widget.Volume(
         step=2,

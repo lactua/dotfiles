@@ -68,13 +68,12 @@ bar_top_margin = 10
 bar_bottom_margin = 10
 bar_left_margin = 10
 bar_right_margin = 10
-bar_size = 41
+bar_size = 37
 bar_background_color = theme['background']
 bar_foreground_color = theme['foreground']
 bar_background_opacity = 1.0
 bar_global_opacity = 1.0
-bar_font = "Opensans Regular"
-bar_nerd_font = "JetbrainsMono Nerd Font"
+bar_font = "BlexMono Nerd Font"
 bar_fontsize = 13
 
 
@@ -85,10 +84,10 @@ widget_left_offset = 15
 widget_right_offset = 15
 widget_padding = 10
 
-widget_background_y_padding = 4.5
+widget_background_y_padding = 5
 widget_background_x_padding = 0
 widget_background_color = theme['alt_background']
 widget_background_opacity = 1.0
-widget_background_radius = 15
+widget_background_radius = 12
 widget_background_border_color = theme['accent']
 widget_background_border_width = 2.5
