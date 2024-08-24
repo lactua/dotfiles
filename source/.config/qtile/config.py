@@ -262,6 +262,8 @@ default_background = {
     "padding_y": widget_background_y_padding,
     "padding_x": widget_background_x_padding,
     "group": True,
+    "line_colour": widget_background_border_color,
+    "line_width": widget_background_border_width
 }
 
 class WidgetTweaker:
