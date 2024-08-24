@@ -1,126 +1,9 @@
-# Qtile config
-# By rei/lactua
-
-
-
-#   _____  _____  _____  _____  _____  _____  __     _____  _____                               
-#  |  |  ||  _  || __  ||     ||  _  || __  ||  |   |   __||   __|                              
-#  |  |  ||     ||    -||-   -||     || __ -||  |__ |   __||__   |                              
-#   \___/ |__|__||__|__||_____||__|__||_____||_____||_____||_____| 
-
-
-
-# Color Theme
-
-theme = {
-    'foreground': '#cdd6f4',
-    'lighter_background': '#45475a',
-    'background': '#1e1e2e',
-    'darker_background': '#181825',
-    'black': '#45475A',
-    'red': '#F38BA8',
-    'green': '#A6E3A1',
-    'yellow': '#F9E2AF',
-    'blue': '#89B4FA',
-    'magenta': '#F5C2E7',
-    'cyan': '#94E2D5',
-    'white': '#BAC2DE'
-}
-
-
-
-# General
-
-mod = "mod4"
-terminal = None # guess if None
-browser = None # guess if None
-file_manager = None # guess if None
-launcher = "rofi -show drun"
-powermenu = "rofi -show menu -modi 'menu:~/.local/share/rofi/scripts/rofi-power-menu --choices=shutdown/reboot/suspend/logout' -config ~/.config/rofi/power.rasi"
-screenshots_path = "~/Pictures/screenshots/" # creates if doesn't exists
-layouts_saved_file = "~/.config/qtile/layouts_saved.json" # creates if doesn't exists
-autostart_file = "~/.config/qtile/autostart.sh"
-wallpapers_path = "~/.local/share/wallpapers/" # creates if doesn't exists
-
-floating_apps = [
-    'nitrogen',
-]
-
-# Uncomment the first line for qwerty, the second for azerty
-# num_keys = "123456789"
-num_keys = "ampersand", "eacute", "quotedbl", "apostrophe", "parenleft", "minus", "egrave", "underscore", "ccedilla", "agrave"
-
-
-# Groups
-
-groups_count = 7
-groups_names = list(map(str, range(1, groups_count + 1))) # Groups names **IN THE PROGRAM**, you probably don't need to change it
-groups_labels = ['●' for _ in range(groups_count)] # How the groups are named in the top bar
-# Alternatives :
-# groups_labels = [str(i) for i in range(1, groups_count + 1)]
-# groups_labels = ['what', 'ever', 'you', 'want']
-
-
-# Layouts
-
-# Uncomment to enable layout
-layouts = [
-    "Columns",
-    # "Bsp",
-    # "RatioTile",
-    "MonadTall",
-    "MonadWide",
-    "Max",
-    # "Floating",
-    # "VerticalTile",
-    # "Stack",
-    # "Matrix",
-    # "Tile",
-    # "TreeTab",
-    # "Zoomy",
-]
-
-layouts_margin = 10
-layouts_border_width = 5
-layouts_border_color = theme['lighter_background']
-layouts_border_focus_color = theme['blue']
-layouts_border_on_single = True
-
-
-
-# Top bar
-
-bar_top_margin = 10
-bar_bottom_margin = 10
-bar_left_margin = 10
-bar_right_margin = 10
-bar_size = 37
-bar_background_color = theme['background']
-bar_foreground_color = theme['foreground']
-bar_background_opacity = 0.85
-bar_global_opacity = 1.0
-bar_font = "Opensans Regular"
-bar_nerd_font = "JetbrainsMono Nerd Font"
-bar_fontsize = 13
-
-widget_gap = 17
-widget_left_offset = 15
-widget_right_offset = 15
-widget_padding = 10
-
-widget_background_y_padding = 5
-widget_background_x_padding = 0
-widget_background_color = theme['darker_background']
-widget_background_opacity = 0.9
-widget_background_radius = 14
-
-
-
 #   _____       _  _   
 #  |     | ___ |_|| |_ 
 #  |-   -||   || ||  _|
 #  |_____||_|_||_||_|  
 
+import sys
 from os.path import expanduser, exists, normpath, getctime
 from subprocess import run
 from os import system, listdir, makedirs
@@ -130,6 +13,10 @@ from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from qtile_extras import widget
 from json import dump, load
+
+sys.path.append(expanduser('~/.config/qtile'))
+
+from variables import *
 
 screenshots_path = expanduser(screenshots_path)
 layouts_saved_file = expanduser(layouts_saved_file)
@@ -424,9 +311,9 @@ left = [
         disable_drag=True,
         borderwidth=0,
         fontsize=15,
-        inactive=theme['black'],
+        inactive=theme['disabled'],
         active=bar_foreground_color,
-        block_highlight_text_color=theme['yellow'],
+        block_highlight_text_color=theme['accent'],
         padding=7,
         fmt=groupBox
     ),
