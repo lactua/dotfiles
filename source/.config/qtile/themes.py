@@ -51,5 +51,5 @@ rosepine = {
     'background': '#191724',
     'alt_background': '#1f1d2e',
     'disabled': '#6e6a86',
-    'accent': '#31748f' 
+    'accent': '#c4a7e7' 
 }
