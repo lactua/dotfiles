@@ -58,6 +58,7 @@ layouts_border_width = 5
 layouts_border_color = theme['disabled']
 layouts_border_focus_color = theme['accent']
 layouts_border_on_single = True
+layouts_restore = True
 
 
 
@@ -76,6 +77,9 @@ bar_font = "Opensans Regular"
 bar_nerd_font = "JetbrainsMono Nerd Font"
 bar_fontsize = 13
 
+
+# Widgets
+
 widget_gap = 17
 widget_left_offset = 15
 widget_right_offset = 15
@@ -83,6 +87,6 @@ widget_padding = 10
 
 widget_background_y_padding = 5
 widget_background_x_padding = 0
-widget_background_color = theme['darker_background']
+widget_background_color = theme['alt_background']
 widget_background_opacity = 0.9
 widget_background_radius = 14

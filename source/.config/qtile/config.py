@@ -256,7 +256,7 @@ keys = [
 #  |_____||_____||__|__||_____||_____||_|___||_____|
 
 default_background = {
-    "colour": widget_background_color + hex(int(widget_background_opacity*255))[2:],
+    "colour": widget_background_color + format(int(widget_background_opacity * 255), "02x"),
     "radius": widget_background_radius,
     "filled": True,
     "padding_y": widget_background_y_padding,
@@ -406,7 +406,7 @@ screens = [
         top=bar.Bar(
             widgets=[widget.Spacer(length=widget_left_offset, decorations=[])] + left + [widget.WindowName(foreground="#00000000", fmt="", decorations=[])] + right + [widget.Spacer(length=widget_right_offset, decorations=[])],
             size=bar_size,
-            background = bar_background_color + hex(int(bar_background_opacity*255))[2:],
+            background = bar_background_color + format(int(bar_background_opacity * 255), "02x"),
             margin = [bar_top_margin, bar_right_margin, bar_bottom_margin-layouts_margin, bar_left_margin],
             opacity = bar_global_opacity
         ),
@@ -539,11 +539,12 @@ def _(layout, group):
 def _():
     global ready
 
-    with open(layouts_saved_file, 'r') as file:
-        layouts_saved = load(file)
+    if layouts_restore:
+        with open(layouts_saved_file, 'r') as file:
+            layouts_saved = load(file)
 
-    for group in groups:
-        if layouts_saved.get(group.name):
-            qtile.groups_map.get(group.name).layout = layouts_saved[group.name]
+        for group in groups:
+            if layouts_saved.get(group.name):
+                qtile.groups_map.get(group.name).layout = layouts_saved[group.name]
     
     ready = True
