@@ -91,4 +91,4 @@ widget_background_color = theme['alt_background']
 widget_background_opacity = 1.0
 widget_background_radius = 12
 widget_background_border_color = theme['accent']
-widget_background_border_width = 3
+widget_background_border_width = 2.5

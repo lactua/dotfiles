@@ -9,7 +9,7 @@
     offset = 15x60
     frame_width = 4
     corners = all
-    corner_radius = 10
+    corner_radius = 14
 
 [urgency_low]
     background = "#191724"
