@@ -85,10 +85,10 @@ widget_left_offset = 15
 widget_right_offset = 15
 widget_padding = 10
 
-widget_background_y_padding = 5
+widget_background_y_padding = 4.5
 widget_background_x_padding = 0
 widget_background_color = theme['alt_background']
 widget_background_opacity = 1.0
 widget_background_radius = 12
 widget_background_border_color = theme['accent']
-widget_background_border_width = 1
+widget_background_border_width = 3
