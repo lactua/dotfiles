@@ -1,25 +1,25 @@
 [global]
-frame_color = "#c4a7e7"
-separator_color= frame
-scale = 1.2
-icon_corner_radius = 5
-font = "Opensans 12"
-icon_theme = "Papirus-Dark"
-origin = top-center
-offset = 0
-frame_width = 4
-corners = all
-corner_radius = 10
+    frame_color = "#c4a7e7"
+    separator_color= frame
+    scale = 1.2
+    icon_corner_radius = 5
+    font = "Opensans 12"
+    icon_theme = "Papirus-Dark"
+    origin = top-right
+    offset = 15x60
+    frame_width = 4
+    corners = all
+    corner_radius = 10
 
 [urgency_low]
-background = "#191724"
-foreground = "#e0def4"
+    background = "#191724"
+    foreground = "#e0def4"
 
 [urgency_normal]
-background = "#191724"
-foreground = "#e0def4"
+    background = "#191724"
+    foreground = "#e0def4"
 
 [urgency_critical]
-background = "#191724b0"
-foreground = "#e0def4"
-frame_color = "#eb6f92"
+    background = "#191724b0"
+    foreground = "#e0def4"
+    frame_color = "#eb6f92"
