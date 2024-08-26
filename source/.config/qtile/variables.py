@@ -53,7 +53,7 @@ layouts = [
     # "Zoomy",
 ]
 
-layouts_margin = 10
+layouts_margin = 7
 layouts_border_width = 5
 layouts_border_color = theme['disabled']
 layouts_border_focus_color = theme['accent']
@@ -64,10 +64,10 @@ layouts_restore = True
 
 # Top bar
 
-bar_top_margin = 10
-bar_bottom_margin = 10
-bar_left_margin = 10
-bar_right_margin = 10
+bar_top_margin = 7
+bar_bottom_margin = 7
+bar_left_margin = 7
+bar_right_margin = 7
 bar_size = 37
 bar_background_color = theme['background']
 bar_foreground_color = theme['foreground']
