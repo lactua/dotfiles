@@ -26,12 +26,12 @@ num_keys = "ampersand", "eacute", "quotedbl", "apostrophe", "parenleft", "minus"
 
 # Groups
 
-groups_count = 7
-groups_names = list(map(str, range(1, groups_count + 1))) # Groups names **IN THE PROGRAM**, you probably don't need to change it
+groups_count = 5
 groups_labels = ['●' for _ in range(groups_count)] # How the groups are named in the top bar
 # Alternatives :
 # groups_labels = [str(i) for i in range(1, groups_count + 1)]
 # groups_labels = ['what', 'ever', 'you', 'want']
+
 
 
 # Layouts
@@ -53,40 +53,58 @@ layouts = [
     # "Zoomy",
 ]
 
-layouts_margin = 7
-layouts_border_width = 5
+layouts_margin = 4
+layouts_border_width = 3
 layouts_border_color = theme['disabled']
 layouts_border_focus_color = theme['accent']
 layouts_border_on_single = True
-layouts_restore = True
+layouts_restore = False
 
 
 
 # Top bar
 
-bar_top_margin = 7
-bar_bottom_margin = 7
-bar_left_margin = 7
-bar_right_margin = 7
-bar_size = 37
+bar_top_margin = 5
+bar_bottom_margin = 5
+bar_left_margin = 0
+bar_right_margin = 0
+bar_size = 32
 bar_background_color = theme['background']
 bar_foreground_color = theme['foreground']
-bar_background_opacity = 0.85
+bar_background_opacity = 0
 bar_global_opacity = 1.0
-bar_font = "Opensans Regular"
+bar_font = "Opensans Medium"
 bar_nerd_font = "JetbrainsMono Nerd Font"
-bar_fontsize = 13
+bar_fontsize = 13.2
 
 
 # Widgets
 
-widget_gap = 17
-widget_left_offset = 15
-widget_right_offset = 15
-widget_padding = 10
+widget_gap = 10
+widget_left_offset = 4
+widget_right_offset = 4
+widget_padding = 15
 
-widget_background_y_padding = 5
-widget_background_x_padding = 0
-widget_background_color = theme['alt_background']
-widget_background_opacity = 0.9
-widget_background_radius = 14
+# Widgets Decorations
+
+widget_decoration = "RectDecoration"
+
+widget_decoration_border_width = 1
+widget_decoration_border_color = theme['accent']
+widget_decoration_border_opacity = 1.0
+widget_decoration_border_padding_x = 0
+widget_decoration_border_padding_y = 0
+
+widget_decoration_powerline_path = "arrow_left"
+widget_decoration_powerline_size = 10
+widget_decoration_powerline_padding_x = 0
+widget_decoration_powerline_padding_y = 0
+
+widget_decoration_rect_filled = True
+widget_decoration_rect_color = theme["alt_background"]
+widget_decoration_rect_opacity = 1.0
+widget_decoration_rect_border_width = 2.7
+widget_decoration_rect_border_color = theme["accent"]
+widget_decoration_rect_padding_x = 0
+widget_decoration_rect_padding_y = 0
+widget_decoration_rect_radius = 10

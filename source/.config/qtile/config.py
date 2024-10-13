@@ -11,7 +11,9 @@ from datetime import datetime
 from libqtile import layout, qtile, hook, bar, core
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
+from libqtile.utils import send_notification
 from qtile_extras import widget
+from shutil import which
 from json import dump, load
 
 sys.path.append(expanduser('~/.config/qtile'))
@@ -35,7 +37,7 @@ if not exists(wallpapers_path):
 
 def guess(apps):
     for app in apps:
-        if exists(f'/bin/{app}'): break
+        if which(app): break
 
     return app
 
@@ -75,7 +77,9 @@ if not file_manager:
 #  |  |  ||    -||  |  ||  |  ||   __||__   |
 #  |_____||__|__||_____||_____||__|   |_____|
 
+groups_names = list(map(str, range(1, groups_count + 1)))
 groups = [Group(name) for name in groups_names]
+
 
 
 #   __     _____  __ __  _____  _____  _____  _____                                             
@@ -139,19 +143,20 @@ class Wallpaper:
         
         return name
 
+    def getSavedWallpaper():
+        with open(expanduser('~/.config/nitrogen/bg-saved.cfg'), 'r') as file:
+            path = file.read().splitlines()[1].removeprefix('file=').strip() # Get saved background path
+            directory = normpath(path[::-1].split('/', 1)[1][::-1])
+            name = path.split('/')[-1]
+
+        if normpath(directory) == normpath(wallpapers_path) and name in Wallpaper.wallpapers: # Checks if the background folder is wallpapers_path is in wallpapers
+            return Wallpaper.wallpapers.index(name) # Set the pointer on the saved background
+
     def restorePointer():
         if exists(expanduser('~/.config/nitrogen/bg-saved.cfg')):
-            with open(expanduser('~/.config/nitrogen/bg-saved.cfg'), 'r') as file:
-                path = file.read().splitlines()[1].removeprefix('file=').strip() # Get saved background path
-                directory = normpath(path[::-1].split('/', 1)[1][::-1])
-                name = path.split('/')[-1]
-
-            if normpath(directory) == normpath(wallpapers_path) and name in Wallpaper.wallpapers: # Checks if the background folder is wallpapers_path is in wallpapers
-                Wallpaper.current = Wallpaper.wallpapers.index(name) # Set the pointer on the saved background
-                return
-        
-        Wallpaper.current = 0
-        return
+            Wallpaper.current = Wallpaper.getSavedWallpaper()
+        else:
+            Wallpaper.current = 0
 
     def init():
         Wallpaper.wallpapers = listdir(wallpapers_path)
@@ -255,15 +260,6 @@ keys = [
 #  |__   ||   --||    -||   __||   __|| | | ||__   |                                            
 #  |_____||_____||__|__||_____||_____||_|___||_____|
 
-default_background = {
-    "colour": widget_background_color + format(int(widget_background_opacity * 255), "02x"),
-    "radius": widget_background_radius,
-    "filled": True,
-    "padding_y": widget_background_y_padding,
-    "padding_x": widget_background_x_padding,
-    "group": True,
-}
-
 class WidgetTweaker:
     def __init__(self, func):
         self.format = func
@@ -295,17 +291,88 @@ def volume(output):
     else:
         return output
 
+@WidgetTweaker
+def currentLayout(output):
+    return output.capitalize()
+
+decorations = {
+    "BorderDecoration": {
+        "border_width": widget_decoration_border_width,
+        "colour": widget_decoration_border_color + format(int(widget_decoration_border_opacity * 255), "02x"),
+        "padding_x": widget_decoration_border_padding_x,
+        "padding_y": widget_decoration_border_padding_y,
+    },
+    "PowerLineDecoration": {
+        "path": widget_decoration_powerline_path,
+        "size": widget_decoration_powerline_size,
+        "padding_x": widget_decoration_powerline_padding_x,
+        "padding_y": widget_decoration_powerline_padding_y,
+    },
+    "RectDecoration": {
+        "group": True,
+        "filled": widget_decoration_rect_filled,
+        "colour": widget_decoration_rect_color + format(int(widget_decoration_rect_opacity * 255), "02x"),
+        "line_width": widget_decoration_rect_border_width,
+        "line_colour": widget_decoration_rect_border_color,
+        "padding_x": widget_decoration_rect_padding_x,
+        "padding_y": widget_decoration_rect_padding_y,
+        "radius": widget_decoration_rect_radius,
+    }
+}
+
+decoration = [getattr(widget.decorations, widget_decoration)(**decorations[widget_decoration])]
+
 widget_defaults = dict(
     font=bar_font,
     foreground=bar_foreground_color,
     fontsize=bar_fontsize,
     padding=widget_padding,
-    decorations=[widget.decorations.RectDecoration(**default_background)]
+    decorations=decoration
 )
 
 extension_defaults = widget_defaults.copy()
 
+sep = [widget.WindowName(foreground="#00000000", fmt="", decorations=[])]
+left_offset = [widget.Spacer(length=widget_left_offset, decorations=[])]
+right_offset = [widget.Spacer(length=widget_right_offset, decorations=[])]
+space = widget.Spacer(length=widget_gap, decorations=[])
+
 left = [
+    widget.Clock(
+        format="%A %d %B %Y %H:%M",
+    ), space,
+
+    widget.TextBox(
+        "\uf060",
+        mouse_callbacks={
+            'Button1': Wallpaper.previous(),
+            'Button4': Wallpaper.next(),
+            'Button5': Wallpaper.previous()
+        },
+    ),
+
+    widget.TextBox(
+        "Wallpaper",
+        padding=0,
+        mouse_callbacks={
+            'Button4': Wallpaper.next(),
+            'Button5': Wallpaper.previous()
+        }
+    ),
+
+    widget.TextBox(
+        "\uf061",
+        mouse_callbacks={
+            'Button1': Wallpaper.next(),
+            'Button4': Wallpaper.next(),
+            'Button5': Wallpaper.previous()
+        },
+    ),
+
+    widget.Cmus(),
+]
+
+middle = [
     widget.GroupBox(
         font=f"{bar_font} Bold",
         disable_drag=True,
@@ -317,52 +384,11 @@ left = [
         padding=7,
         fmt=groupBox
     ),
-
-    widget.CurrentLayout(
-        fmt="Current layout : {}",
-        mouse_callbacks={
-            'Button2': lambda: None,
-            'Button3': lazy.prev_layout()
-        },
-    ),
 ]
 
 right = [
-    widget.CPU(
-        format="{load_percent}%",
-        fmt="󰍛   {}",
-    ),
-        
-    [
-        widget.TextBox(padding=3),
-
-        widget.TextBox(
-            " ",
-            font=bar_nerd_font,
-            padding=0
-        ),
-
-        widget.Memory(
-            measure_mem="G",
-            format="{MemUsed: .2f}{mm} /{MemTotal: .2f}{mm}",
-            padding=0
-        ),
-
-        widget.TextBox(
-            "   󰋊 ",
-            font=bar_nerd_font,
-            padding=0
-        ),
-
-        widget.Memory(
-            measure_swap="G",
-            format="{SwapUsed: .2f}{ms} /{SwapTotal: .2f}{ms}",
-            padding=0
-        ),
-
-        widget.TextBox(padding=3),
-    ],
-
+    widget.StatusNotifier(), space,
+    
     widget.Volume(
         step=2,
         fmt=volume,
@@ -370,41 +396,29 @@ right = [
         update_interval=0.01,
         limit_max_volume=True,
         volume_app="pavucontrol",
-    ),
+    ), space,
 
-    widget.Clock(
-        format="%A %d %B %Y %H:%M",
-    ),
+    widget.CurrentLayout(
+        fmt=currentLayout,
+        mouse_callbacks={
+            'Button2': lambda: None,
+            'Button3': lazy.prev_layout()
+        },
+    ), space,
 
     widget.TextBox(
         '⏻',
+        decorations=[getattr(widget.decorations, widget_decoration)(**decorations[widget_decoration]|{'extrawidth': 3})],
         mouse_callbacks={
             'Button1': lazy.spawn(powermenu)
         },
-        decorations=[widget.decorations.RectDecoration(**default_background | {"extrawidth": 3})],
-    ),
+    ), space,
 ]
-
-for index in range(1, 2*len(left)-1, 2):
-    left.insert(index, widget.Spacer(length=widget_gap, decorations=[]))
-
-for index in range(1, 2*len(right)-1, 2):
-    right.insert(index, widget.Spacer(length=widget_gap, decorations=[]))
-
-for widget_group in filter(lambda g: isinstance(g, list), left):
-    index = left.index(widget_group)
-    left.pop(index)
-    left = left[:index] + widget_group + left[index:]
-
-for widget_group in filter(lambda g: isinstance(g, list), right):
-    index = right.index(widget_group)
-    right.pop(index)
-    right = right[:index] + widget_group + right[index:]
 
 screens = [
     Screen(
         top=bar.Bar(
-            widgets=[widget.Spacer(length=widget_left_offset, decorations=[])] + left + [widget.WindowName(foreground="#00000000", fmt="", decorations=[])] + right + [widget.Spacer(length=widget_right_offset, decorations=[])],
+            widgets=left_offset + left + sep + middle + sep + right + right_offset,
             size=bar_size,
             background = bar_background_color + format(int(bar_background_opacity * 255), "02x"),
             margin = [bar_top_margin, bar_right_margin, bar_bottom_margin-layouts_margin, bar_left_margin],
@@ -420,62 +434,11 @@ screens = [
 #  | | | ||  |  ||  |  ||__   ||   __|                                                          
 #  |_|_|_||_____||_____||_____||_____|
 
-DPX = 50 # Distance needed to grow one time on the X axis
-DPY = 25 # Distance needed to grow one time on the Y axis
-
-last = {
-    'x': 0,
-    'y': 0,
-    'client': ''
-}
-
-@lazy.function
-def resizeClientColumnsLayout(_qtile, x, y):
-    global last
-
-    _layout = _qtile.current_group.layout
-
-    if _layout.name != "columns":
-        return
-
-    _column = _layout.columns[_layout.current]
-    _client = _column.clients[_column.current]
-
-    if abs(last['x'] - x) >= 5 * DPX or abs(last['y'] - y) >= 5 * DPY or _client.name != last['client']: # If the window title changed or x, y anormally low -> reset last
-        last = {
-            'x': 0,
-            'y': 0,
-            'client': _client.name
-        }
-
-    delta_x = x - last['x']
-    delta_y = y - last['y']
-    
-    for _ in range(abs(delta_x) // DPX):
-        if delta_x < 0:
-            _layout.grow_left()
-        else:
-            _layout.grow_right()
-
-    for _ in range(abs(delta_y) // DPY):
-        if delta_y < 0:
-            _layout.grow_up()
-        else:
-            _layout.grow_down()
-    
-    if abs(delta_x) // DPX or abs(delta_y) >= DPY:
-        last = {
-            'x': x,
-            'y': y,
-            'client': _client.name
-        }
-
 
 mouse = [
     Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
     Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
     Click([mod], "Button2", lazy.window.bring_to_front()),
-    Drag([mod, "control"], "Button3", resizeClientColumnsLayout())
 ]
 
 
