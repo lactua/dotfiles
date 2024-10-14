@@ -72,20 +72,21 @@ if not file_manager:
     ])        
 
 
-#   _____  _____  _____  _____  _____  _____ 
-#  |   __|| __  ||     ||  |  ||  _  ||   __|
-#  |  |  ||    -||  |  ||  |  ||   __||__   |
-#  |_____||__|__||_____||_____||__|   |_____|
+#  _____                          
+# |   __| ___  ___  _ _  ___  ___ 
+# |  |  ||  _|| . || | || . ||_ -|
+# |_____||_|  |___||___||  _||___|
+#                       |_|       
 
 groups_names = list(map(str, range(1, groups_count + 1)))
 groups = [Group(name) for name in groups_names]
 
 
-
-#   __     _____  __ __  _____  _____  _____  _____                                             
-#  |  |   |  _  ||  |  ||     ||  |  ||_   _||   __|                                            
-#  |  |__ |     ||_   _||  |  ||  |  |  | |  |__   |                                            
-#  |_____||__|__|  |_|  |_____||_____|  |_|  |_____|  
+#  __                         _        
+# |  |    ___  _ _  ___  _ _ | |_  ___ 
+# |  |__ | .'|| | || . || | ||  _||_ -|
+# |_____||__,||_  ||___||___||_|  |___|
+#             |___|                    
 
 layout_theme = {
     "border_width": layouts_border_width,
@@ -123,15 +124,15 @@ layouts_tweaks = {
 layouts = [getattr(layout, i)(**(layout_theme|layouts_tweaks.get(i, {}))) for i in layouts]
 
 
-#   _____  _____  _____  _____  _____  _____  _____  _____  _____ 
-#  |   __||  |  ||     || __  ||_   _||     ||  |  ||_   _||   __|
-#  |__   ||     ||  |  ||    -|  | |  |   --||  |  |  | |  |__   |
-#  |_____||__|__||_____||__|__|  |_|  |_____||_____|  |_|  |_____|
+#  _____  _    _  _  _  _    _           
+# |  |  || |_ |_|| ||_|| |_ |_| ___  ___ 
+# |  |  ||  _|| || || ||  _|| || -_||_ -|
+# |_____||_|  |_||_||_||_|  |_||___||___|
 
 @lazy.function
-def screenshot(_qtile, mode=0):
+def screenshot(_qtile, select=False):
     file_path = datetime.now().strftime(f"{screenshots_path}%d-%m-%Y-%H-%M-%S.jpg")
-    system(f"scrot {'-s' if mode == 1 else ''} {file_path}")
+    system(f"scrot {'-fs' if select else ''} {file_path}")
     system(f"xclip -selection clipboard -t image/png -i {file_path}")
 
 class Wallpaper:
@@ -182,31 +183,41 @@ class Wallpaper:
     
 Wallpaper.init()
 
+class WidgetTweaker:
+    def __init__(self, func):
+        self.format = func
+
+
+#  _____  _              _              _        
+# |   __|| |_  ___  ___ | |_  ___  _ _ | |_  ___ 
+# |__   ||   || . ||  _||  _||  _|| | ||  _||_ -|
+# |_____||_|_||___||_|  |_|  |___||___||_|  |___|
 
 keys = [
 
     # Window Management
 
-    Key([mod], "left", lazy.layout.left(), desc="Move focus to left"),
-    Key([mod], "right", lazy.layout.right(), desc="Move focus to right"),
-    Key([mod], "down", lazy.layout.down(), desc="Move focus down"),
-    Key([mod], "up", lazy.layout.up(), desc="Move focus up"),
-    Key([mod, "shift"], "left", lazy.layout.shuffle_left(), desc="Move window to the left"),
-    Key([mod, "shift"], "right", lazy.layout.shuffle_right(), desc="Move window to the right"),
-    Key([mod, "shift"], "down", lazy.layout.shuffle_down(), desc="Move window down"),
-    Key([mod, "shift"], "up", lazy.layout.shuffle_up(), desc="Move window up"),
-    Key([mod, "control"], "left", lazy.layout.grow_left(), desc="Grow window to the left"),
-    Key([mod, "control"], "right", lazy.layout.grow_right(), desc="Grow window to the right"),
-    Key([mod, "control"], "down", lazy.layout.grow_down(), desc="Grow window down"),
-    Key([mod, "control"], "up", lazy.layout.grow_up(), desc="Grow window up"),
-    Key([mod], "j", lazy.layout.grow(), desc="Grow window"),
-    Key([mod], "h", lazy.layout.shrink(), desc="Shrink window"),
+    Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
+    Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
+    Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
+    Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
+    Key([mod, "shift"], "h", lazy.layout.shuffle_left(), desc="Move window to the left"),
+    Key([mod, "shift"], "l", lazy.layout.shuffle_right(), desc="Move window to the right"),
+    Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
+    Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
+    Key([mod, "control"], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
+    Key([mod, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"),
+    Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
+    Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
+    Key([mod, "control"], "y", lazy.layout.grow(), desc="Grow window"),
+    Key([mod, "control"], "t", lazy.layout.shrink(), desc="Shrink window"),
     Key([mod], "r", lazy.layout.normalize(), desc="Reset all window sizes"),
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
     Key([mod], "m", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window",),
     
     Key([mod], "f", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
-    Key([mod], "Tab", lazy.layout.next(), desc="Move window focus to other window"),
+    Key([mod], "Tab", lazy.layout.next(), desc="Move window focus to next window"),
+    Key([mod, "shift"], "Tab", lazy.layout.previous(), desc="Move window focus to previous window"),
 
     # Media
     
@@ -223,7 +234,7 @@ keys = [
     Key([mod], "Space", lazy.spawn(launcher), desc="Launch launcher"),
     Key([mod], "b", lazy.spawn(browser), desc="Launch browser"),
     Key([mod], "e", lazy.spawn(file_manager), desc="Launch file manager"),
-    Key(["control", "mod1"], "Delete", lazy.spawn(powermenu), desc="Launch powermenu"),
+    Key([mod], "Delete", lazy.spawn(powermenu), desc="Launch powermenu"),
     
     # Qtile
     
@@ -232,8 +243,8 @@ keys = [
 
     # Screenshot
 
-    Key([], "Print", screenshot(), desc="Take a screenshot"),
-    Key(["mod1"], "Print", screenshot(mode=1), desc="Take a screenshot of a zone or a window"),
+    Key([mod], "s", screenshot(), desc="Take a screenshot"),
+    Key([mod, "shift"], "s", screenshot(select=True), desc="Take a screenshot of a zone or a window"),
 
     # Wallpapers
 
@@ -242,27 +253,23 @@ keys = [
     
     # Layouts
 
-    Key([mod], "l", lazy.next_layout(), desc="Toggle between layouts"),
-    Key([mod, "shift"], 'l', lazy.prev_layout(), desc="Previous layout"),
+    Key([mod, "shift"], "y", lazy.next_layout(), desc="Toggle between layouts"),
+    Key([mod, "shift"], 't', lazy.prev_layout(), desc="Previous layout"),
     *[Key([mod, "control"], num_keys[index], lazy.group.setlayout(layout.name), desc=f"Switch to the {layout.name} layout") for index, layout in enumerate(layouts)],
     
     # Groups
 
-    Key([mod, "mod1"], "right", lazy.screen.next_group(), desc="Go to next group"),
-    Key([mod, "mod1"], "left", lazy.screen.prev_group(), desc="Go to previous group"),
+    Key([mod], "y", lazy.screen.next_group(), desc="Go to next group"),
+    Key([mod], "t", lazy.screen.prev_group(), desc="Go to previous group"),
     *[Key([mod], num_keys[index], lazy.group[group.name].toscreen(), desc=f"Switch to the {group.name} group") for index, group in enumerate(groups)],
     *[Key([mod, "shift"], num_keys[index], lazy.window.togroup(group.name, switch_group=True), desc=f"Move focused window to the {group.name} group") for index, group in enumerate(groups)],
 ]
 
 
-#   _____  _____  _____  _____  _____  _____  _____                                             
-#  |   __||     || __  ||   __||   __||   | ||   __|                                            
-#  |__   ||   --||    -||   __||   __|| | | ||__   |                                            
-#  |_____||_____||__|__||_____||_____||_|___||_____|
-
-class WidgetTweaker:
-    def __init__(self, func):
-        self.format = func
+#  _____           
+# | __  | ___  ___ 
+# | __ -|| .'||  _|
+# |_____||__,||_|  
 
 @WidgetTweaker
 def groupBox(output):
@@ -270,7 +277,6 @@ def groupBox(output):
     label = groups_labels[index]
 
     return label
-
 
 @WidgetTweaker
 def volume(output):
@@ -368,8 +374,6 @@ left = [
             'Button5': Wallpaper.previous()
         },
     ),
-
-    widget.Cmus(),
 ]
 
 middle = [
@@ -415,6 +419,12 @@ right = [
     ), space,
 ]
 
+
+#  _____                               
+# |   __| ___  ___  ___  ___  ___  ___ 
+# |__   ||  _||  _|| -_|| -_||   ||_ -|
+# |_____||___||_|  |___||___||_|_||___|
+
 screens = [
     Screen(
         top=bar.Bar(
@@ -429,11 +439,10 @@ screens = [
 
 
 
-#   _____  _____  _____  _____  _____                                                           
-#  |     ||     ||  |  ||   __||   __|                                                          
-#  | | | ||  |  ||  |  ||__   ||   __|                                                          
-#  |_|_|_||_____||_____||_____||_____|
-
+#  _____                     
+# |     | ___  _ _  ___  ___ 
+# | | | || . || | ||_ -|| -_|
+# |_|_|_||___||___||___||___|
 
 mouse = [
     Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
@@ -442,11 +451,11 @@ mouse = [
 ]
 
 
-
-#   _____  _____  _____  _____  _____    _____  _____  _____  _____  _____  _____  _____  _____ 
-#  |     ||_   _||  |  ||   __|| __  |  |   __||   __||_   _||_   _||     ||   | ||   __||   __|
-#  |  |  |  | |  |     ||   __||    -|  |__   ||   __|  | |    | |  |-   -|| | | ||  |  ||__   |
-#  |_____|  |_|  |__|__||_____||__|__|  |_____||_____|  |_|    |_|  |_____||_|___||_____||_____|
+#  _____  _    _                     _____       _    _    _                
+# |     || |_ | |_  ___  ___  ___   |   __| ___ | |_ | |_ |_| ___  ___  ___ 
+# |  |  ||  _||   || -_||  _||_ -|  |__   || -_||  _||  _|| ||   || . ||_ -|
+# |_____||_|  |_|_||___||_|  |___|  |_____||___||_|  |_|  |_||_|_||_  ||___|
+#                                                                 |___|     
 
 dgroups_key_binder = None
 dgroups_app_rules = []
@@ -474,10 +483,10 @@ auto_minimize = False
 wmname = "Qtile"
 
 
-#   _____  _____  _____  _____  _____                                                           
-#  |  |  ||     ||     ||  |  ||   __|                                                          
-#  |     ||  |  ||  |  ||    -||__   |                                                          
-#  |__|__||_____||_____||__|__||_____| 
+#  _____            _        
+# |  |  | ___  ___ | |_  ___ 
+# |     || . || . || '_||_ -|
+# |__|__||___||___||_,_||___|
 
 ready = False
 

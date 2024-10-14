@@ -80,7 +80,7 @@ bar_fontsize = 13.2
 
 # Widgets
 
-widget_gap = 10
+widget_gap = 6
 widget_left_offset = 4
 widget_right_offset = 4
 widget_padding = 15
