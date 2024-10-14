@@ -2,8 +2,6 @@
 
 ## Screenshots
 ![](./assets/screen1.png)
-![](./assets/screen2.png)
-![](./assets/screen3.png)
 
 ## Installation (On arch)
 run `install.py` and make sure to select your favorite aur helper in `--aurhelper`
