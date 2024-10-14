@@ -37,34 +37,23 @@ Note that shortcuts can be changed in the qtile configuration.
 
 |Key combination|Action|
 |:-|:-|
-|Super + left|Move focus to left|
-|Super + right|Move focus to right|
-|Super + down|Move focus down|
-|Super + up|Move focus up|
-|Super + Shift + left|Move window to the left|
-|Super + Shift + right|Move window to the right|
-|Super + Shift + down|Move window down|
-|Super + Shift + up|Move window up|
-|Super + Control + left|Grow window to the left|
-|Super + Control + right|Grow window to the right|
-|Super + Control + down|Grow window down|
-|Super + Control + up|Grow window up|
+|Super + h|Move focus to left|
+|Super + l|Move focus to right|
+|Super + j|Move focus down|
+|Super + k|Move focus up|
+|Super + Shift + h|Move window to the left|
+|Super + Shift + l|Move window to the right|
+|Super + Shift + j|Move window down|
+|Super + Shift + k|Move window up|
+|Super + Control + h|Grow window to the left|
+|Super + Control + l|Grow window to the right|
+|Super + Control + j|Grow window down|
+|Super + Control + k|Grow window up|
 |Super + r|Reset all window sizes|
 |Super + q|Kill focused window|
 |Super + m|Toggle fullscreen on the focused window|
 |Super + f|Toggle floating on the focused window|
 |Super + Tab|Move window focus to other window|
-
-#### Media
-
-|Key combination|Action|
-|:-|:-|
-|XF86AudioRaiseVolume|Increase volume by 5%|
-|XF86AudioLowerVolume|Decrease volume by 5%|
-|XF86AudioMute|Toggle mute|
-|XF86AudioPlay|Play/Pause media|
-|XF86AudioPrev|Play previous media track|
-|XF86AudioNext|Play next media track|
 
 #### Launch
 
@@ -74,7 +63,7 @@ Note that shortcuts can be changed in the qtile configuration.
 |Super + Space|Launch launcher|
 |Super + b|Launch browser|
 |Super + e|Launch file manager|
-|Control + alt + Delete|Launch power menu|
+|Super + Delete|Launch power menu|
 
 #### Qtile
 
@@ -87,8 +76,8 @@ Note that shortcuts can be changed in the qtile configuration.
 
 |Key combination|Action|
 |:-|:-|
-|Print|Take a screenshot|
-|alt + Print|Take a screenshot of a zone or a window|
+|Super + s|Take a screenshot|
+|Super + shift + s|Take a screenshot of a selection|
 
 #### Wallpapers
 |Key combination|Action|
@@ -100,15 +89,15 @@ Note that shortcuts can be changed in the qtile configuration.
 
 |Key combination|Action|
 |:-|:-|
-|Super + l|Next layouts|
-|Super + Shift + l|Previous layout|
+|Super + Control + y|Next layouts|
+|Super + Control + t|Previous layout|
 |Super + Control + [workspace]|Switch to the specified layout|
 
 #### Groups
 
 |Key combination|Action|
 |:-|:-|
-|Super + alt + right|Go to next group|
-|Super + alt + left|Go to previous group|
+|Super + y|Go to next group|
+|Super + t|Go to previous group|
 |Super + [workspace]|Switch to the specified group|
 |Super + Shift + [workspace]|Move focused window to the specified group|
