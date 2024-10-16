@@ -12,4 +12,4 @@ dunst
 alsa-utils
 kitty
 stow
-picom-git
+picom

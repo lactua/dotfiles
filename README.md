@@ -3,27 +3,24 @@
 ## Screenshots
 ![](./assets/screen1.png)
 
-## Installation (On arch)
-run `install.py` and make sure to select your favorite aur helper in `--aurhelper`
+## Installation
+### Dependencies
+Install dependencies from `dependencies.txt`
+```bash
+cat dependencies.txt > paru -S --needed -
 ```
-usage: install.py [-h] [--aurhelper AURHELPER] [--verbose] [--source SOURCE] [--target TARGET] [--link] [--skipchecking] [--skipdeps]
 
-options:
-  -h, --help            show this help message and exit
-  --aurhelper AURHELPER
-                        AUR helper, by default 'yay'
-  --verbose             Display more information
-  --source SOURCE       Dotfiles source
-  --target TARGET       Dotfiles target, by default home directory
-  --link                Creates symbolic links instead of copy files
-  --skipchecking        Skip existing files checking
-  --skipdeps            Skip installing dependencies
+### Dotfiles
+This repo uses [**GNU Stow**](https://www.gnu.org/software/stow/) to manage dotfiles.
+Enter the dots directory and stow what you want to install with `~` as target (or everything)
+```bash
+stow -t ~ *
 ```
 
 ## Configuration
-I made the qtile configuration in a way that almost everything is easly tweakable without any python or qtile knowledge. Just edit the variables at the start of the config in the **variables** category.
+I made the qtile configuration in a way that almost everything is easly tweakable without any python or qtile knowledge by editing the variables.py in the qtile config directory.
 
-**Important** : This dotfiles is initially made for azerty keyboards so by default on a qwerty keyboard the numbers keys won't work.
+**Important** : This dotfiles is initially made for azerty keyboards so by default on a qwerty keyboard the numbers keys won't work. This can be easly changed in variables.py
 
 ## Usage
 
