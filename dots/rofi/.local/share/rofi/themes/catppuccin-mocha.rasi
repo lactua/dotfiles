@@ -9,7 +9,7 @@
     grey: #6c7086;
 
     width: 600;
-    font: "Opensans Regular 16";
+    font: "Sans-serif 16";
 }
 
 element-text, element-icon , mode-switcher {

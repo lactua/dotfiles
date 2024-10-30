@@ -17,6 +17,7 @@ wallpapers_path = "~/.local/share/wallpapers/" # creates if doesn't exists
 
 floating_apps = [
     'nitrogen',
+    'loupe'
 ]
 
 # Uncomment the first line for qwerty, the second for azerty
@@ -53,7 +54,7 @@ layouts = [
     # "Zoomy",
 ]
 
-layouts_margin = 4
+layouts_margin = 3
 layouts_border_width = 3
 layouts_border_color = theme['disabled']
 layouts_border_focus_color = theme['accent']
@@ -73,8 +74,8 @@ bar_background_color = theme['background']
 bar_foreground_color = theme['foreground']
 bar_background_opacity = 0
 bar_global_opacity = 1.0
-bar_font = "Opensans Medium"
-bar_nerd_font = "JetbrainsMono Nerd Font"
+bar_font = "Sans-serif Medium"
+bar_nerd_font = "NF"
 bar_fontsize = 13.2
 
 

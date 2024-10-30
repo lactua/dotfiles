@@ -8,10 +8,9 @@ from os.path import expanduser, exists, normpath, getctime
 from subprocess import run
 from os import system, listdir, makedirs
 from datetime import datetime
-from libqtile import layout, qtile, hook, bar, core
-from libqtile.config import Click, Drag, Group, Key, Match, Screen
+from libqtile import layout, qtile, hook, bar
+from libqtile.config import Click, Drag, Group, Key, KeyChord, Match, Screen
 from libqtile.lazy import lazy
-from libqtile.utils import send_notification
 from qtile_extras import widget
 from shutil import which
 from json import dump, load
@@ -130,10 +129,11 @@ layouts = [getattr(layout, i)(**(layout_theme|layouts_tweaks.get(i, {}))) for i 
 # |_____||_|  |_||_||_||_|  |_||___||___|
 
 @lazy.function
-def screenshot(_qtile, select=False):
+def screenshot(_qtile, select=False, sopen=False):
     file_path = datetime.now().strftime(f"{screenshots_path}%d-%m-%Y-%H-%M-%S.jpg")
     system(f"scrot {'-fs' if select else ''} {file_path}")
     system(f"xclip -selection clipboard -t image/png -i {file_path}")
+    if sopen: system(f"xdg-open {file_path} &")
 
 class Wallpaper:
     def formatName(name):
@@ -197,27 +197,29 @@ keys = [
 
     # Window Management
 
-    Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
-    Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
-    Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
-    Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
-    Key([mod, "shift"], "h", lazy.layout.shuffle_left(), desc="Move window to the left"),
-    Key([mod, "shift"], "l", lazy.layout.shuffle_right(), desc="Move window to the right"),
-    Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
-    Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
-    Key([mod, "control"], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
-    Key([mod, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"),
-    Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
-    Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
-    Key([mod, "control"], "y", lazy.layout.grow(), desc="Grow window"),
-    Key([mod, "control"], "t", lazy.layout.shrink(), desc="Shrink window"),
-    Key([mod], "r", lazy.layout.normalize(), desc="Reset all window sizes"),
-    Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
-    Key([mod], "m", lazy.window.toggle_fullscreen(), desc="Toggle fullscreen on the focused window",),
+    Key([mod, "shift"], "h", lazy.layout.shuffle_left()),
+    Key([mod, "shift"], "l", lazy.layout.shuffle_right()),
+    Key([mod, "shift"], "j", lazy.layout.shuffle_down()),
+    Key([mod, "shift"], "k", lazy.layout.shuffle_up()),
+    Key([mod, "shift", "control"], "h", lazy.layout.grow_left()),
+    Key([mod, "shift", "control"], "l", lazy.layout.grow_right()),
+    Key([mod, "shift", "control"], "j", lazy.layout.grow_down()),
+    Key([mod, "shift", "control"], "k", lazy.layout.grow_up()),
+    Key([mod], "o", lazy.layout.grow()),
+    Key([mod], "i", lazy.layout.shrink()),
+
+    Key([mod], "h", lazy.layout.left()),
+    Key([mod], "l", lazy.layout.right()),
+    Key([mod], "j", lazy.layout.down()),
+    Key([mod], "k", lazy.layout.up()),
+    Key([mod], "Tab", lazy.layout.next()),
+    Key([mod, "shift"], "Tab", lazy.layout.previous()),
+
+    Key([mod], "r", lazy.layout.normalize()),
+    Key([mod], "q", lazy.window.kill()),
+    Key([mod], "m", lazy.window.toggle_fullscreen(),),
     
-    Key([mod], "f", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
-    Key([mod], "Tab", lazy.layout.next(), desc="Move window focus to next window"),
-    Key([mod, "shift"], "Tab", lazy.layout.previous(), desc="Move window focus to previous window"),
+    Key([mod], "f", lazy.window.toggle_floating()),
 
     # Media
     
@@ -228,41 +230,52 @@ keys = [
     Key([], "XF86AudioPrev", lazy.spawn('playerctl previous')),
     Key([], "XF86AudioNext", lazy.spawn('playerctl next')),
 
+    KeyChord([mod], "p", [
+        Key([mod], "k", lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ +5%')),
+        Key([mod], "j", lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ -5%')),
+        Key([mod], "i", lazy.spawn('pactl set-sink-mute @DEFAULT_SINK@ toggle')),
+        Key([mod], "o", lazy.spawn('playerctl play-pause')),
+        Key([mod], "h", lazy.spawn('playerctl previous')),
+        Key([mod], "l", lazy.spawn('playerctl next')),
+    ], mode=True, name="Media mode"),
+
     # Launch
 
-    Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
-    Key([mod], "Space", lazy.spawn(launcher), desc="Launch launcher"),
-    Key([mod], "b", lazy.spawn(browser), desc="Launch browser"),
-    Key([mod], "e", lazy.spawn(file_manager), desc="Launch file manager"),
-    Key([mod], "Delete", lazy.spawn(powermenu), desc="Launch powermenu"),
+    Key([mod], "Return", lazy.spawn(terminal)),
+    Key([mod], "Space", lazy.spawn(launcher)),
+    Key([mod], "b", lazy.spawn(browser)),
+    Key([mod], "e", lazy.spawn(file_manager)),
+    Key([mod], "Delete", lazy.spawn(powermenu)),
     
     # Qtile
     
-    Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
-    Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
+    Key([mod, "control"], "r", lazy.reload_config()),
+    Key([mod, "control"], "q", lazy.shutdown()),
 
     # Screenshot
 
-    Key([mod], "s", screenshot(), desc="Take a screenshot"),
-    Key([mod, "shift"], "s", screenshot(select=True), desc="Take a screenshot of a zone or a window"),
+    Key([mod], "s", screenshot()),
+    Key([mod, "shift"], "s", screenshot(select=True)),
+    Key([mod, "control"], "s", screenshot(sopen=True)),
+    Key([mod, "shift", "control"], "s", screenshot(sopen=True, select=True)),
 
     # Wallpapers
 
-    Key([mod], "w", Wallpaper.next(), desc="Next background"),
-    Key([mod, "shift"], "w", Wallpaper.previous(), desc="Previous background"),
+    Key([mod], "w", Wallpaper.next()),
+    Key([mod, "shift"], "w", Wallpaper.previous()),
     
     # Layouts
 
-    Key([mod, "shift"], "y", lazy.next_layout(), desc="Toggle between layouts"),
-    Key([mod, "shift"], 't', lazy.prev_layout(), desc="Previous layout"),
-    *[Key([mod, "control"], num_keys[index], lazy.group.setlayout(layout.name), desc=f"Switch to the {layout.name} layout") for index, layout in enumerate(layouts)],
+    Key([mod], "v", lazy.next_layout()),
+    Key([mod, "shift"], 'v', lazy.prev_layout()),
+    *[Key([mod, "control"], num_keys[index], lazy.group.setlayout(layout.name)) for index, layout in enumerate(layouts)],
     
     # Groups
 
-    Key([mod], "y", lazy.screen.next_group(), desc="Go to next group"),
-    Key([mod], "t", lazy.screen.prev_group(), desc="Go to previous group"),
-    *[Key([mod], num_keys[index], lazy.group[group.name].toscreen(), desc=f"Switch to the {group.name} group") for index, group in enumerate(groups)],
-    *[Key([mod, "shift"], num_keys[index], lazy.window.togroup(group.name, switch_group=True), desc=f"Move focused window to the {group.name} group") for index, group in enumerate(groups)],
+    Key([mod, "control"], "l", lazy.screen.next_group()),
+    Key([mod, "control"], "h", lazy.screen.prev_group()),
+    *[Key([mod], num_keys[index], lazy.group[group.name].toscreen()) for index, group in enumerate(groups)],
+    *[Key([mod, "shift"], num_keys[index], lazy.window.togroup(group.name, switch_group=True)) for index, group in enumerate(groups)],
 ]
 
 
@@ -373,7 +386,9 @@ left = [
             'Button4': Wallpaper.next(),
             'Button5': Wallpaper.previous()
         },
-    ),
+    ), space,
+
+    widget.Chord()
 ]
 
 middle = [

@@ -8,7 +8,7 @@
     fg-col2: #f38ba8;
     grey: #6c7086;
 
-    font: "Firacode Nerd Font 14";
+    font: "Sans-serif Medium 14";
 }
 
 window {
@@ -51,7 +51,7 @@ element {
 element-text {
 	background-color: inherit;
 	text-color: inherit;
-	font: "Firacode Nerd Font 35";
+	font: "Sans-serif 35";
 	align-items: center;
 	vertical-align: 0.5;
 	horizontal-align: 0.5;
