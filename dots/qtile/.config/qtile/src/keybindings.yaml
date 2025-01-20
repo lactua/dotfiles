@@ -1,0 +1,222 @@
+---
+
+dmod: &mod mod4
+
+Keys:
+  # Window Management
+  - mods: [*mod, shift]
+    key: h
+    command: lazy.layout.shuffle_left()
+
+  - mods: [*mod, shift]
+    key: l
+    command: lazy.layout.shuffle_right()
+
+  - mods: [*mod, shift]
+    key: j
+    command: lazy.layout.shuffle_down()
+
+  - mods: [*mod, shift]
+    key: k
+    command: lazy.layout.shuffle_up()
+
+  - mods: [*mod, shift, control]
+    key: h
+    command: lazy.layout.grow_left()
+
+  - mods: [*mod, shift, control]
+    key: l
+    command: lazy.layout.grow_right()
+
+  - mods: [*mod, shift, control]
+    key: j
+    command: lazy.layout.grow_down()
+
+  - mods: [*mod, shift, control]
+    key: k
+    command: lazy.layout.grow_up()
+
+  - mods: [*mod]
+    key: o
+    command: lazy.layout.grow()
+
+  - mods: [*mod]
+    key: i
+    command: lazy.layout.shrink()
+
+  - mods: [*mod]
+    key: h
+    command: lazy.layout.left()
+
+  - mods: [*mod]
+    key: l
+    command: lazy.layout.right()
+
+  - mods: [*mod]
+    key: j
+    command: lazy.layout.down()
+
+  - mods: [*mod]
+    key: k
+    command: lazy.layout.up()
+
+  - mods: [*mod]
+    key: Tab
+    command: lazy.layout.next()
+
+  - mods: [*mod, shift]
+    key: Tab
+    command: lazy.layout.previous()
+
+  - mods: [*mod]
+    key: r
+    command: lazy.layout.normalize()
+
+  - mods: [*mod]
+    key: q
+    command: lazy.window.kill()
+
+  - mods: [*mod]
+    key: m
+    command: lazy.window.toggle_fullscreen()
+
+  - mods: [*mod]
+    key: f
+    command: lazy.window.toggle_floating()
+
+
+  # Media
+  - mods: []
+    key: XF86AudioRaiseVolume
+    command: lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ +5%')
+
+  - mods: []
+    key: XF86AudioLowerVolume
+    command: lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ -5%')
+
+  - mods: []
+    key: XF86AudioMute
+    command: lazy.spawn('pactl set-sink-mute @DEFAULT_SINK@ toggle')
+
+  - mods: []
+    key: XF86AudioPlay
+    command: lazy.spawn('playerctl play-pause')
+
+  - mods: []
+    key: XF86AudioPrev
+    command: lazy.spawn('playerctl previous')
+
+  - mods: []
+    key: XF86AudioNext
+    command: lazy.spawn('playerctl next')
+
+
+  # Launch
+  - mods: [*mod]
+    key: Return
+    command: lazy.spawn(terminal)
+
+  - mods: [*mod]
+    key: Space
+    command: lazy.spawn(launcher)
+
+  - mods: [*mod]
+    key: b
+    command: lazy.spawn(browser)
+
+  - mods: [*mod]
+    key: e
+    command: lazy.spawn(file_manager)
+
+  - mods: [*mod]
+    key: Delete
+    command: lazy.spawn(powermenu)
+
+
+  # Qtile
+  - mods: [*mod, control]
+    key: r
+    command: lazy.reload_config()
+
+  - mods: [*mod, control]
+    key: q
+    command: lazy.shutdown()
+
+
+  # Screenshot
+  - mods: [*mod]
+    key: s
+    command: screenshot()
+
+  - mods: [*mod, shift]
+    key: s
+    command: screenshot(select=True)
+
+  - mods: [*mod, control]
+    key: s
+    command: screenshot(sopen=True)
+
+  - mods: [*mod, shift, control]
+    key: s
+    command: screenshot(sopen=True, select=True)
+
+
+  # Wallpapers
+  - mods: [*mod]
+    key: w
+    command: Wallpaper.next()
+
+  - mods: [*mod, shift]
+    key: w
+    command: Wallpaper.previous()
+
+
+  # Layouts
+  - mods: [*mod]
+    key: v
+    command: lazy.next_layout()
+
+  - mods: [*mod, shift]
+    key: v
+    command: lazy.prev_layout()
+
+
+  # Groups
+  - mods: [*mod, control]
+    key: l
+    command: lazy.screen.next_group()
+
+  - mods: [*mod, control]
+    key: h
+    command: lazy.screen.prev_group()
+
+  # For lazy reasons, group switching keybindings with num keys are in config.py
+  
+
+Keychords:
+  - mods: [*mod]
+    key: p
+    submappings:
+      - mods: [*mod]
+        key: k
+        command: lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ +5%')
+
+      - mods: [*mod]
+        key: j
+        command: lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ -5%')
+
+      - mods: [*mod]
+        key: i
+        command: lazy.spawn('pactl set-sink-mute @DEFAULT_SINK@ toggle')
+
+      - mods: [*mod]
+        key: o
+        command: lazy.spawn('playerctl play-pause')
+
+      - mods: [*mod]
+        key: h
+        command: lazy.spawn('playerctl previous')
+
+      - mods: [*mod]
+        key: l
+        command: lazy.spawn('playerctl next')

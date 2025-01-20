@@ -14,15 +14,18 @@ from libqtile.lazy import lazy
 from qtile_extras import widget
 from shutil import which
 from json import dump, load
+from yaml import safe_load
 
-sys.path.append(expanduser('~/.config/qtile'))
+sys.path.append(expanduser('~/.config/qtile/src'))
 
 from variables import *
 
 screenshots_path = expanduser(screenshots_path)
 layouts_saved_file = expanduser(layouts_saved_file)
-autostart_file = expanduser(autostart_file)
+keybindings_file = expanduser(keybindings_file)
 wallpapers_path = expanduser(wallpapers_path)
+
+autostarts = list(map(expanduser, autostarts))
 
 if not exists(path := layouts_saved_file):
     with open(path, 'w') as file:
@@ -154,8 +157,9 @@ class Wallpaper:
             return Wallpaper.wallpapers.index(name) # Set the pointer on the saved background
 
     def restorePointer():
-        if exists(expanduser('~/.config/nitrogen/bg-saved.cfg')):
-            Wallpaper.current = Wallpaper.getSavedWallpaper()
+        saved = Wallpaper.getSavedWallpaper()
+        if exists(expanduser('~/.config/nitrogen/bg-saved.cfg')) and saved:
+            Wallpaper.current = saved 
         else:
             Wallpaper.current = 0
 
@@ -193,90 +197,23 @@ class WidgetTweaker:
 # |__   ||   || . ||  _||  _||  _|| | ||  _||_ -|
 # |_____||_|_||___||_|  |_|  |___||___||_|  |___|
 
+with open(keybindings_file, 'rb') as file:
+    keybindings = safe_load(file)
+
+dmod = keybindings['dmod']
+
 keys = [
-
-    # Window Management
-
-    Key([mod, "shift"], "h", lazy.layout.shuffle_left()),
-    Key([mod, "shift"], "l", lazy.layout.shuffle_right()),
-    Key([mod, "shift"], "j", lazy.layout.shuffle_down()),
-    Key([mod, "shift"], "k", lazy.layout.shuffle_up()),
-    Key([mod, "shift", "control"], "h", lazy.layout.grow_left()),
-    Key([mod, "shift", "control"], "l", lazy.layout.grow_right()),
-    Key([mod, "shift", "control"], "j", lazy.layout.grow_down()),
-    Key([mod, "shift", "control"], "k", lazy.layout.grow_up()),
-    Key([mod], "o", lazy.layout.grow()),
-    Key([mod], "i", lazy.layout.shrink()),
-
-    Key([mod], "h", lazy.layout.left()),
-    Key([mod], "l", lazy.layout.right()),
-    Key([mod], "j", lazy.layout.down()),
-    Key([mod], "k", lazy.layout.up()),
-    Key([mod], "Tab", lazy.layout.next()),
-    Key([mod, "shift"], "Tab", lazy.layout.previous()),
-
-    Key([mod], "r", lazy.layout.normalize()),
-    Key([mod], "q", lazy.window.kill()),
-    Key([mod], "m", lazy.window.toggle_fullscreen(),),
-    
-    Key([mod], "f", lazy.window.toggle_floating()),
-
-    # Media
-    
-    Key([], "XF86AudioRaiseVolume", lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ +5%')),
-    Key([], "XF86AudioLowerVolume", lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ -5%')),
-    Key([], "XF86AudioMute", lazy.spawn('pactl set-sink-mute @DEFAULT_SINK@ toggle')),
-    Key([], "XF86AudioPlay", lazy.spawn('playerctl play-pause')),
-    Key([], "XF86AudioPrev", lazy.spawn('playerctl previous')),
-    Key([], "XF86AudioNext", lazy.spawn('playerctl next')),
-
-    KeyChord([mod], "p", [
-        Key([mod], "k", lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ +5%')),
-        Key([mod], "j", lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ -5%')),
-        Key([mod], "i", lazy.spawn('pactl set-sink-mute @DEFAULT_SINK@ toggle')),
-        Key([mod], "o", lazy.spawn('playerctl play-pause')),
-        Key([mod], "h", lazy.spawn('playerctl previous')),
-        Key([mod], "l", lazy.spawn('playerctl next')),
-    ], mode=True, name="Media mode"),
-
-    # Launch
-
-    Key([mod], "Return", lazy.spawn(terminal)),
-    Key([mod], "Space", lazy.spawn(launcher)),
-    Key([mod], "b", lazy.spawn(browser)),
-    Key([mod], "e", lazy.spawn(file_manager)),
-    Key([mod], "Delete", lazy.spawn(powermenu)),
-    
-    # Qtile
-    
-    Key([mod, "control"], "r", lazy.reload_config()),
-    Key([mod, "control"], "q", lazy.shutdown()),
-
-    # Screenshot
-
-    Key([mod], "s", screenshot()),
-    Key([mod, "shift"], "s", screenshot(select=True)),
-    Key([mod, "control"], "s", screenshot(sopen=True)),
-    Key([mod, "shift", "control"], "s", screenshot(sopen=True, select=True)),
-
-    # Wallpapers
-
-    Key([mod], "w", Wallpaper.next()),
-    Key([mod, "shift"], "w", Wallpaper.previous()),
-    
-    # Layouts
-
-    Key([mod], "v", lazy.next_layout()),
-    Key([mod, "shift"], 'v', lazy.prev_layout()),
-    *[Key([mod, "control"], num_keys[index], lazy.group.setlayout(layout.name)) for index, layout in enumerate(layouts)],
-    
-    # Groups
-
-    Key([mod, "control"], "l", lazy.screen.next_group()),
-    Key([mod, "control"], "h", lazy.screen.prev_group()),
-    *[Key([mod], num_keys[index], lazy.group[group.name].toscreen()) for index, group in enumerate(groups)],
-    *[Key([mod, "shift"], num_keys[index], lazy.window.togroup(group.name, switch_group=True)) for index, group in enumerate(groups)],
+    *[Key([dmod], num_keys[index], lazy.group[group.name].toscreen()) for index, group in enumerate(groups)],
+    *[Key([dmod, "shift"], num_keys[index], lazy.window.togroup(group.name, switch_group=True)) for index, group in enumerate(groups)],
 ]
+
+for keybind in keybindings['Keys']:
+    keys.append(Key(keybind['mods'], keybind['key'], eval(keybind['command'])))
+
+for keychord in keybindings['Keychords']:
+    submappings = [Key(k['mods'], k['key'], eval(k['command'])) for k in keychord['submappings']]
+
+    keys.append(KeyChord(keychord['mods'], keychord['key'], submappings))
 
 
 #  _____           
@@ -460,9 +397,9 @@ screens = [
 # |_|_|_||___||___||___||___|
 
 mouse = [
-    Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
-    Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
-    Click([mod], "Button2", lazy.window.bring_to_front()),
+    Drag([dmod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
+    Drag([dmod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
+    Click([dmod], "Button2", lazy.window.bring_to_front()),
 ]
 
 
@@ -507,7 +444,9 @@ ready = False
 
 @hook.subscribe.startup_once
 def _():
-    run(autostart_file)
+    for autostart in autostarts:
+        if exists(autostart):
+            run(autostart)
 
 @hook.subscribe.layout_change
 def _(layout, group):
