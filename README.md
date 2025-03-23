@@ -1,5 +1,21 @@
 # Qtile dotfiles
 
+**Important** : Big chance this dotfiles won't receive any updates.
+
+This dotfiles contains configuration &/or theme for :
+- cava
+- dunst
+- fonts
+- gtk
+- icons
+- kitty
+- neofetch
+- picom
+- qtile
+- rofi
+- vesktop
+- wallpapers
+
 ## Screenshots
 ![](./assets/screen1.png)
 

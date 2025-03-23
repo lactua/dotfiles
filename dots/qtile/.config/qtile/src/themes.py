@@ -2,7 +2,7 @@ catppuccin_mocha = {
     'foreground': '#cdd6f4',
     'background': '#1e1e2e',
     'alt_background': '#181825',
-    'disabled': '#313244',
+    'disabled': '#494a66',
     'accent': '#89b4fA',
 }
 

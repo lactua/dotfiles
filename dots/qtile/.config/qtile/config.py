@@ -56,13 +56,14 @@ if not terminal:
 
 if not browser:
     browser = guess([
-        'firefox',
-        'chrome',
-        'chromium',
+        'zen-browser',
         'librewolf',
         'vivaldi',
         'waterfox',
-        'brave'
+        'brave',
+        'firefox',
+        'chromium',
+        'chrome'
     ])
 
 if not file_manager:
@@ -276,7 +277,10 @@ decorations = {
     }
 }
 
-decoration = [getattr(widget.decorations, widget_decoration)(**decorations[widget_decoration])]
+if widget_decoration:
+    decoration = [getattr(widget.decorations, widget_decoration)(**decorations[widget_decoration])]
+else:
+    decoration = {}
 
 widget_defaults = dict(
     font=bar_font,
@@ -364,7 +368,7 @@ right = [
 
     widget.TextBox(
         '⏻',
-        decorations=[getattr(widget.decorations, widget_decoration)(**decorations[widget_decoration]|{'extrawidth': 3})],
+        decorations=[] if not widget_decoration else [decoration|{'extrawidth': 3}],
         mouse_callbacks={
             'Button1': lazy.spawn(powermenu)
         },
@@ -382,6 +386,8 @@ screens = [
         top=bar.Bar(
             widgets=left_offset + left + sep + middle + sep + right + right_offset,
             size=bar_size,
+            border_color=bar_border_color + format(int(bar_border_opacity * 255), "02x"),
+            border_width=int(bar_border_width),
             background = bar_background_color + format(int(bar_background_opacity * 255), "02x"),
             margin = [bar_top_margin, bar_right_margin, bar_bottom_margin-layouts_margin, bar_left_margin],
             opacity = bar_global_opacity
@@ -474,3 +480,7 @@ def _():
                 qtile.groups_map.get(group.name).layout = layouts_saved[group.name]
     
     ready = True
+
+@hook.subscribe.changegroup
+def _():
+    open("/home/lactua/gngn.txt", "w").write(str(qtile.get_groups()))
