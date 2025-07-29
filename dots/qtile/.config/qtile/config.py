@@ -15,6 +15,7 @@ from qtile_extras import widget
 from shutil import which
 from json import dump, load
 from yaml import safe_load
+from random import randint
 
 sys.path.append(expanduser('~/.config/qtile/src'))
 
@@ -164,14 +165,27 @@ class Wallpaper:
         else:
             Wallpaper.current = 0
 
+    def randomize():
+        Wallpaper.current = randint(0, len(Wallpaper.wallpapers)-1)
+
     def init():
         Wallpaper.wallpapers = listdir(wallpapers_path)
-        Wallpaper.wallpapers.sort(key=lambda w: getctime(f"{wallpapers_path}{w}")) # Sort by creation date
-        # wallpapers.sort(key=str.lower) # sort by name
+        
+        if wallpapers_sort_method == "creation_date":
+            Wallpaper.wallpapers.sort(key=lambda w: getctime(f"{wallpapers_path}{w}")) # Sort by creation date
+        elif wallpapers_sort_method == "name":
+            Wallpaper.wallpapers.sort(key=str.lower) # sort by name
+        else:
+            Wallpaper.wallpapers.sort(key=str.lower) # sort by name
 
         Wallpaper.mode = "zoom-fill"
 
-        Wallpaper.restorePointer()
+        if wallpapers_randomize:
+            Wallpaper.randomize()
+        else:
+            Wallpaper.restorePointer()
+
+        Wallpaper.set()
 
     def set():
         system(f'nitrogen --save --set-{Wallpaper.mode} {wallpapers_path}{Wallpaper.formatName(Wallpaper.wallpapers[Wallpaper.current])}')
@@ -209,7 +223,10 @@ keys = [
 ]
 
 for keybind in keybindings['Keys']:
-    keys.append(Key(keybind['mods'], keybind['key'], eval(keybind['command'])))
+    for key in keybind['keys']:
+        keys.append(Key(keybind['mods'], key, eval(keybind['command'])))
+
+keys.append(Key([dmod], "left", lazy.layout.left()))
 
 for keychord in keybindings['Keychords']:
     submappings = [Key(k['mods'], k['key'], eval(k['command'])) for k in keychord['submappings']]
@@ -367,8 +384,8 @@ right = [
     ), space,
 
     widget.TextBox(
-        '⏻',
-        decorations=[] if not widget_decoration else [decoration|{'extrawidth': 3}],
+        '⏻ ',
+        decorations=[] if not widget_decoration else decoration,
         mouse_callbacks={
             'Button1': lazy.spawn(powermenu)
         },
@@ -480,7 +497,3 @@ def _():
                 qtile.groups_map.get(group.name).layout = layouts_saved[group.name]
     
     ready = True
-
-@hook.subscribe.changegroup
-def _():
-    open("/home/lactua/gngn.txt", "w").write(str(qtile.get_groups()))

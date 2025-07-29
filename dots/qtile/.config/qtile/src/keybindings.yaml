@@ -5,189 +5,194 @@ dmod: &mod mod4
 Keys:
   # Window Management
   - mods: [*mod, shift]
-    key: h
+    keys: [h, left]
     command: lazy.layout.shuffle_left()
 
   - mods: [*mod, shift]
-    key: l
+    keys: [l, right]
     command: lazy.layout.shuffle_right()
 
   - mods: [*mod, shift]
-    key: j
+    keys: [j, down]
     command: lazy.layout.shuffle_down()
 
   - mods: [*mod, shift]
-    key: k
+    keys: [k, up]
     command: lazy.layout.shuffle_up()
 
-  - mods: [*mod, shift, control]
-    key: h
+  - mods: [*mod, control]
+    keys: [h, left]
     command: lazy.layout.grow_left()
 
-  - mods: [*mod, shift, control]
-    key: l
+  - mods: [*mod, control]
+    keys: [l, right]
     command: lazy.layout.grow_right()
 
-  - mods: [*mod, shift, control]
-    key: j
+  - mods: [*mod, control]
+    keys: [j, down]
     command: lazy.layout.grow_down()
 
-  - mods: [*mod, shift, control]
-    key: k
+  - mods: [*mod, control]
+    keys: [k, up]
     command: lazy.layout.grow_up()
 
   - mods: [*mod]
-    key: o
+    keys: [o]
     command: lazy.layout.grow()
 
   - mods: [*mod]
-    key: i
+    keys: [i]
     command: lazy.layout.shrink()
 
   - mods: [*mod]
-    key: h
+    keys: [h, left]
     command: lazy.layout.left()
 
   - mods: [*mod]
-    key: l
+    keys: [l, right]
     command: lazy.layout.right()
 
   - mods: [*mod]
-    key: j
+    keys: [j, down]
     command: lazy.layout.down()
 
   - mods: [*mod]
-    key: k
+    keys: [k, up]
     command: lazy.layout.up()
 
   - mods: [*mod]
-    key: Tab
+    keys: [Tab]
     command: lazy.layout.next()
 
   - mods: [*mod, shift]
-    key: Tab
+    keys: [Tab]
     command: lazy.layout.previous()
 
   - mods: [*mod]
-    key: r
+    keys: [r]
     command: lazy.layout.normalize()
 
   - mods: [*mod]
-    key: q
+    keys: [q]
     command: lazy.window.kill()
 
   - mods: [*mod]
-    key: m
+    keys: [m]
     command: lazy.window.toggle_fullscreen()
 
   - mods: [*mod]
-    key: f
+    keys: [f]
     command: lazy.window.toggle_floating()
 
 
   # Media
   - mods: []
-    key: XF86AudioRaiseVolume
+    keys: [XF86AudioRaiseVolume]
     command: lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ +5%')
 
   - mods: []
-    key: XF86AudioLowerVolume
+    keys: [XF86AudioLowerVolume]
     command: lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ -5%')
 
   - mods: []
-    key: XF86AudioMute
+    keys: [XF86AudioMute]
     command: lazy.spawn('pactl set-sink-mute @DEFAULT_SINK@ toggle')
 
   - mods: []
-    key: XF86AudioPlay
+    keys: [XF86AudioPlay]
     command: lazy.spawn('playerctl play-pause')
 
   - mods: []
-    key: XF86AudioPrev
+    keys: [XF86AudioPrev]
     command: lazy.spawn('playerctl previous')
 
   - mods: []
-    key: XF86AudioNext
+    keys: [XF86AudioNext]
     command: lazy.spawn('playerctl next')
 
 
   # Launch
   - mods: [*mod]
-    key: Return
+    keys: [Return]
     command: lazy.spawn(terminal)
 
   - mods: [*mod]
-    key: Space
+    keys: [Space]
     command: lazy.spawn(launcher)
 
   - mods: [*mod]
-    key: b
+    keys: [b]
     command: lazy.spawn(browser)
 
+  - mods: [*mod, shift]
+    keys: [b]
+    command: lazy.spawn(browser + ' --private-window')
+
+
   - mods: [*mod]
-    key: e
+    keys: [e]
     command: lazy.spawn(file_manager)
 
   - mods: [*mod]
-    key: Delete
+    keys: [Delete]
     command: lazy.spawn(powermenu)
 
 
   # Qtile
   - mods: [*mod, control]
-    key: r
+    keys: [r]
     command: lazy.reload_config()
 
   - mods: [*mod, control]
-    key: q
+    keys: [q]
     command: lazy.shutdown()
 
 
   # Screenshot
   - mods: [*mod]
-    key: s
+    keys: [s]
     command: screenshot()
 
   - mods: [*mod, shift]
-    key: s
+    keys: [s]
     command: screenshot(select=True)
 
   - mods: [*mod, control]
-    key: s
+    keys: [s]
     command: screenshot(sopen=True)
 
   - mods: [*mod, shift, control]
-    key: s
+    keys: [s]
     command: screenshot(sopen=True, select=True)
 
 
   # Wallpapers
   - mods: [*mod]
-    key: w
+    keys: [w]
     command: Wallpaper.next()
 
   - mods: [*mod, shift]
-    key: w
+    keys: [w]
     command: Wallpaper.previous()
 
 
   # Layouts
   - mods: [*mod]
-    key: v
+    keys: [v]
     command: lazy.next_layout()
 
   - mods: [*mod, shift]
-    key: v
+    keys: [v]
     command: lazy.prev_layout()
 
 
   # Groups
-  - mods: [*mod, control]
-    key: l
+  - mods: [*mod, mod1]
+    keys: [l, right]
     command: lazy.screen.next_group()
 
-  - mods: [*mod, control]
-    key: h
+  - mods: [*mod, mod1]
+    keys: [h, left]
     command: lazy.screen.prev_group()
 
   # For lazy reasons, group switching keybindings with num keys are in config.py
