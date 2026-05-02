@@ -1,0 +1,248 @@
+---
+
+dmod: &mod mod4
+
+Keys:
+  # Window Management
+  - mods: [*mod, shift]
+    keys: [h, left]
+    command: shuffle_left
+
+  - mods: [*mod, shift]
+    keys: [l, right]
+    command: shuffle_right
+
+  - mods: [*mod, shift]
+    keys: [j, down]
+    command: shuffle_down
+
+  - mods: [*mod, shift]
+    keys: [k, up]
+    command: shuffle_up
+
+  - mods: [*mod, control]
+    keys: [h, left]
+    command: grow_left
+
+  - mods: [*mod, control]
+    keys: [l, right]
+    command: grow_right
+
+  - mods: [*mod, control]
+    keys: [j, down]
+    command: grow_down
+
+  - mods: [*mod, control]
+    keys: [k, up]
+    command: grow_up
+
+  - mods: [*mod]
+    keys: [o]
+    command: grow
+
+  - mods: [*mod]
+    keys: [u]
+    command: toggle_split
+
+  - mods: [*mod]
+    keys: [i]
+    command: shrink
+
+  - mods: [*mod]
+    keys: [h, left]
+    command: left
+
+  - mods: [*mod]
+    keys: [l, right]
+    command: right
+
+  - mods: [*mod]
+    keys: [j, down]
+    command: down
+
+  - mods: [*mod]
+    keys: [k, up]
+    command: up
+
+  - mods: [*mod]
+    keys: [Tab]
+    command: next
+
+  - mods: [*mod, shift]
+    keys: [Tab]
+    command: previous
+
+  - mods: [*mod]
+    keys: [r]
+    command: normalize
+
+  - mods: [*mod]
+    keys: [q]
+    command: kill
+
+  - mods: [*mod]
+    keys: [m]
+    command: toggle_fullscreen
+
+  - mods: [*mod]
+    keys: [f]
+    command: toggle_floating
+
+
+  # Media
+  - mods: []
+    keys: [XF86AudioRaiseVolume]
+    command: volume_up
+
+  - mods: []
+    keys: [XF86AudioLowerVolume]
+    command: volume_down
+
+  - mods: []
+    keys: [XF86AudioMute]
+    command: volume_mute
+
+  - mods: []
+    keys: [XF86AudioPlay]
+    command: playerctl_play_pause
+
+  - mods: []
+    keys: [XF86AudioPrev]
+    command: playerctl_previous
+
+  - mods: []
+    keys: [XF86AudioNext]
+    command: playerctl_next
+
+
+  # Launch
+  - mods: [*mod]
+    keys: [Return]
+    command: terminal
+
+  - mods: [*mod]
+    keys: [Space]
+    command: launcher
+
+  - mods: [*mod]
+    keys: [b]
+    command: browser
+
+  - mods: [*mod, shift]
+    keys: [b]
+    command: private_window
+
+
+  - mods: [*mod]
+    keys: [e]
+    command: file_manager
+
+  - mods: [*mod]
+    keys: [Delete]
+    command: powermenu
+
+
+  # Qtile
+  - mods: [*mod, control]
+    keys: [r]
+    command: reload_config
+
+  - mods: [*mod, control]
+    keys: [q]
+    command: shutdown
+
+
+  # Screenshot
+  - mods: [*mod]
+    keys: [s]
+    command: screenshot
+
+  - mods: [*mod, shift]
+    keys: [s]
+    command: screenshot_select
+
+  - mods: [*mod, control]
+    keys: [s]
+    command: screenshot_sopen
+
+  - mods: [*mod, shift, control]
+    keys: [s]
+    command: screenshot_sopen_select
+
+
+  # Wallpapers
+  - mods: [*mod]
+    keys: [w]
+    command: wallpaper_next
+
+  - mods: [*mod, shift]
+    keys: [w]
+    command: wallpaper_previous
+
+
+  # Layouts
+  - mods: [*mod]
+    keys: [v]
+    command: next_layout
+
+  - mods: [*mod, shift]
+    keys: [v]
+    command: prev_layout
+
+
+  # Groups
+  - mods: [*mod, mod1]
+    keys: [l, right]
+    command: next_group
+
+  - mods: [*mod, mod1]
+    keys: [h, left]
+    command: prev_group
+
+  # For lazy reasons, group switching keybindings with num keys are in config.py
+  
+Keychords:
+  - mods: [*mod]
+    key: p
+    mode: true
+    name: Media
+    submappings:
+      - mods: []
+        keys: [k, up]
+        command: volume_up
+
+      - mods: []
+        keys: [j, down]
+        command: volume_down
+
+      - mods: []
+        keys: [g]
+        command: volume_mute
+
+      - mods: []
+        keys: [h, left]
+        command: playerctl_previous
+
+      - mods: []
+        keys: [l, right]
+        command: playerctl_next
+
+      - mods: []
+        keys: [y]
+        command: playerctl_play_pause
+
+      - mods: []
+        keys: [u]
+        command: playerctl_shuffle
+
+      - mods: []
+        keys: [i]
+        command: playerctl_loop_none
+
+      - mods: []
+        keys: [o]
+        command: playerctl_loop_playlist
+
+      - mods: []
+        keys: [p]
+        command: playerctl_loop_track

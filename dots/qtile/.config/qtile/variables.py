@@ -1,6 +1,6 @@
 # Color Theme
 #                  vvvvvvvvvvvvvvvv  change this to change theme
-from themes import catppuccin_mocha as theme
+from src.themes import catppuccin_mocha as theme
 
 # General
 
@@ -11,11 +11,11 @@ launcher = "rofi -show drun"
 powermenu = "rofi -show menu -modi 'menu:~/.local/share/rofi/scripts/rofi-power-menu --choices=shutdown/reboot/suspend/logout' -config ~/.config/rofi/power.rasi"
 screenshots_path = "~/Pictures/screenshots/" # creates if doesn't exists
 layouts_saved_file = "~/.config/qtile/cache/layouts_saved.json" # creates if doesn't exists
-keybindings_file = "~/.config/qtile/src/keybindings.yaml"
+keybindings_file = "~/.config/qtile/keybindings.yaml"
 wallpapers_path = "~/.local/share/wallpapers/" # creates if doesn't exists
 
 autostarts = [
-    "~/.config/qtile/src/autostart.sh",
+    "~/.config/qtile/autostart.sh",
     "~/.autostart.sh"
 ]
 

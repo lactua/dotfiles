@@ -17,7 +17,7 @@ from json import dump, load
 from yaml import safe_load
 from random import randint
 
-sys.path.append(expanduser('~/.config/qtile/src'))
+sys.path.append(expanduser('~/.config/qtile'))
 
 from variables import *
 
@@ -96,7 +96,9 @@ layout_theme = {
     "border_width": layouts_border_width,
     "margin": layouts_margin,
     "border_focus": layouts_border_focus_color,
+    "border_focus_stack": layouts_border_focus_color,
     "border_normal": layouts_border_color,
+    "border_normal_stack": layouts_border_color,
     "border_on_single": layouts_border_on_single
 }
 
@@ -105,6 +107,7 @@ layouts_tweaks = {
         "grow_amount": 5,
         "fair": False,
         "num_columns": 2,
+        "split": True
     },
     "MonadTall": {
         "ratio": 0.57,
@@ -212,26 +215,84 @@ class WidgetTweaker:
 # |__   ||   || . ||  _||  _||  _|| | ||  _||_ -|
 # |_____||_|_||___||_|  |_|  |___||___||_|  |___|
 
+commands = {
+    "shuffle_left": lazy.layout.shuffle_left(),
+    "shuffle_right": lazy.layout.shuffle_right(),
+    "shuffle_down": lazy.layout.shuffle_down(),
+    "shuffle_up": lazy.layout.shuffle_up(),
+    "grow_left": lazy.layout.grow_left(),
+    "grow_right": lazy.layout.grow_right(),
+    "grow_down": lazy.layout.grow_down(),
+    "grow_up": lazy.layout.grow_up(),
+    "grow": lazy.layout.grow(),
+    "toggle_split": lazy.layout.toggle_split(),
+    "shrink": lazy.layout.shrink(),
+    "left": lazy.layout.left(),
+    "right": lazy.layout.right(),
+    "down": lazy.layout.down(),
+    "up": lazy.layout.up(),
+    "next": lazy.layout.next(),
+    "previous": lazy.layout.previous(),
+    "normalize": lazy.layout.normalize(),
+    "kill": lazy.window.kill(),
+    "toggle_fullscreen": lazy.window.toggle_fullscreen(),
+    "toggle_floating": lazy.window.toggle_floating(),
+    "terminal": lazy.spawn(terminal),
+    "launcher": lazy.spawn(launcher),
+    "browser": lazy.spawn(browser),
+    "private_window": lazy.spawn(browser + ' --private-window'),
+    "file_manager": lazy.spawn(file_manager),
+    "powermenu": lazy.spawn(powermenu),
+    "reload_config": lazy.reload_config(),
+    "shutdown": lazy.shutdown(),
+    "screenshot": screenshot(),
+    "screenshot_select": screenshot(select=True),
+    "screenshot_sopen": screenshot(sopen=True),
+    "screenshot_sopen_select": screenshot(sopen=True, select=True),
+    "wallpaper_next": Wallpaper.next(),
+    "wallpaper_previous": Wallpaper.previous(),
+    "next_layout": lazy.next_layout(),
+    "prev_layout": lazy.prev_layout(),
+    "next_group": lazy.screen.next_group(),
+    "prev_group": lazy.screen.prev_group(),
+    "volume_up": lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ +5%'),
+    "volume_down": lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ -5%'),
+    "volume_mute": lazy.spawn('pactl set-sink-mute @DEFAULT_SINK@ toggle'),
+    "playerctl_previous": lazy.spawn('playerctl previous'),
+    "playerctl_next": lazy.spawn('playerctl next'),
+    "playerctl_play_pause": lazy.spawn('playerctl play-pause'),
+    "playerctl_shuffle": lazy.spawn('playerctl shuffle toggle'),
+    "playerctl_loop_none": lazy.spawn('playerctl loop none'),
+    "playerctl_loop_playlist": lazy.spawn('playerctl loop playlist'),
+    "playerctl_loop_track": lazy.spawn('playerctl loop track'),
+}
+
 with open(keybindings_file, 'rb') as file:
     keybindings = safe_load(file)
 
 dmod = keybindings['dmod']
 
 keys = [
-    *[Key([dmod], num_keys[index], lazy.group[group.name].toscreen()) for index, group in enumerate(groups)],
-    *[Key([dmod, "shift"], num_keys[index], lazy.window.togroup(group.name, switch_group=True)) for index, group in enumerate(groups)],
+    *[
+        Key([dmod], num_keys[index], lazy.group[group.name].toscreen()) for index, group in enumerate(groups)
+    ],
+    *[
+        Key([dmod, "shift"], num_keys[index], lazy.window.togroup(group.name, switch_group=True)) for index, group in enumerate(groups)
+    ],
 ]
 
 for keybind in keybindings['Keys']:
     for key in keybind['keys']:
-        keys.append(Key(keybind['mods'], key, eval(keybind['command'])))
-
-keys.append(Key([dmod], "left", lazy.layout.left()))
+        keys.append(Key(keybind['mods'], key, commands[keybind['command']]))
 
 for keychord in keybindings['Keychords']:
-    submappings = [Key(k['mods'], k['key'], eval(k['command'])) for k in keychord['submappings']]
+    submappings = []
+    for submap in keychord['submappings']:
+        for key in submap['keys']:
+            submappings.append(Key(submap['mods'], key, commands[submap['command']]))
 
-    keys.append(KeyChord(keychord['mods'], keychord['key'], submappings))
+
+    keys.append(KeyChord(keychord['mods'], keychord['key'], submappings, keychord.get('mode', False), keychord.get('name', '')))
 
 
 #  _____           
@@ -241,6 +302,7 @@ for keychord in keybindings['Keychords']:
 
 @WidgetTweaker
 def groupBox(output):
+    if output not in groups_names: return output
     index = groups_names.index(output)
     label = groups_labels[index]
 
@@ -346,7 +408,9 @@ left = [
         },
     ), space,
 
-    widget.Chord()
+    widget.Chord(
+        fmt="{} mode"
+    ), space,
 ]
 
 middle = [
