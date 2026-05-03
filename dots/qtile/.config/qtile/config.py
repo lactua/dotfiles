@@ -5,7 +5,7 @@
 
 import sys
 from os.path import expanduser, exists, normpath, getctime
-from subprocess import run, getoutput
+from subprocess import run
 from os import listdir, makedirs
 from datetime import datetime
 from libqtile import layout, qtile, hook, bar
@@ -17,6 +17,7 @@ from shutil import which
 from json import dump, load
 from yaml import safe_load
 from random import randint
+from xcffib import ConnectionException
 
 sys.path.append(expanduser('~/.config/qtile'))
 
@@ -120,9 +121,9 @@ layouts = [getattr(layout, i)(**(layout_theme|layouts[i])) for i in layouts.keys
 @lazy.function
 def screenshot(_qtile, select=False, sopen=False):
     file_path = datetime.now().strftime(f"{screenshots_path}%d-%m-%Y-%H-%M-%S.jpg")
-    getoutput(f"scrot {'-fs' if select else ''} {file_path}")
-    getoutput(f"xclip -selection clipboard -t image/png -i {file_path}")
-    if sopen: getoutput(f"xdg-open {file_path} &")
+    run(["scrot", '-fs' if select else '', file_path])
+    run(["xclip", "-selection", "clipboard", "-t", "image/png", "-i", file_path])
+    if sopen: run(["xdg-open", file_path, "&"])
 
 class Wallpaper:
     def formatName(name):
@@ -165,7 +166,9 @@ class Wallpaper:
             Wallpaper.restorePointer()
 
     def set(screen):
-        screen.set_wallpaper(f"{wallpapers_path}{Wallpaper.formatName(Wallpaper.wallpapers[Wallpaper.current])}", mode=Wallpaper.mode)
+        try:
+            screen.set_wallpaper(f"{wallpapers_path}{Wallpaper.wallpapers[Wallpaper.current]}", mode=Wallpaper.mode)
+        except ConnectionException: logger.error("xcb connection errors because of socket, pipe and other stream errors.")
         with open(expanduser(saved_wallpaper_file), 'w') as file:
             file.write(Wallpaper.wallpapers[Wallpaper.current])
 
