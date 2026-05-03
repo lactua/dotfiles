@@ -1,6 +1,5 @@
 scrot
 xclip
-nitrogen
 qtile
 qtile-extras
 python-dbus-next

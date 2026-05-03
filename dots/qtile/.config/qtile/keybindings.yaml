@@ -179,6 +179,10 @@ Keys:
     keys: [w]
     command: wallpaper_previous
 
+  - mods: [*mod, control]
+    keys: [w]
+    command: wallpapermenu
+
 
   # Layouts
   - mods: [*mod]

@@ -9,10 +9,12 @@ browser = None # guess if None
 file_manager = None # guess if None
 launcher = "rofi -show drun"
 powermenu = "rofi -show menu -modi 'menu:~/.local/share/rofi/scripts/rofi-power-menu --choices=shutdown/reboot/suspend/logout' -config ~/.config/rofi/power.rasi"
+wallpapermenu = "~/.local/share/rofi/scripts/wallpaper-selector.sh"
 screenshots_path = "~/Pictures/screenshots/" # creates if doesn't exists
 layouts_saved_file = "~/.config/qtile/cache/layouts_saved.json" # creates if doesn't exists
 keybindings_file = "~/.config/qtile/keybindings.yaml"
 wallpapers_path = "~/.local/share/wallpapers/" # creates if doesn't exists
+saved_wallpaper_file = "~/.config/qtile/cache/saved_wallpaper" # creates if doesn't exists
 
 autostarts = [
     "~/.config/qtile/autostart.sh",
@@ -20,7 +22,6 @@ autostarts = [
 ]
 
 floating_apps = [
-    'nitrogen',
     'loupe'
 ]
 
@@ -42,21 +43,42 @@ groups_labels = ['' for _ in range(groups_count)] # How the groups are named 
 # Layouts
 
 # Uncomment to enable layout
-layouts = [
-    "Columns",
-    # "Bsp",
-    # "RatioTile",
-    "MonadTall",
-    "MonadWide",
-    "Max",
-    # "Floating",
-    # "VerticalTile",
-    # "Stack",
-    # "Matrix",
-    # "Tile",
-    # "TreeTab",
-    # "Zoomy",
-]
+
+layouts = {
+    "Columns": {
+        "grow_amount": 5,
+        "fair": False,
+        "num_columns": 2,
+        "split": True
+    },
+    "Bsp": {
+        "fair": False,
+        "grow_amount": 5,
+    },
+    # "RatioTile": {},
+    "MonadTall": {
+        "ratio": 0.57,
+        "min_ratio": 0.5,
+        "max_ratio": 0.7,
+        "change_size": 20,
+        "change_ratio": 0.01,
+    },
+    "MonadWide": {
+        "ratio": 0.55,
+        "min_ratio": 0.45,
+        "max_ratio": 0.7,
+        "change_size": 35,
+        "change_ratio": 0.02,
+    },
+    "Max": {},
+    # "Floating": {},
+    # "VerticalTile": {},
+    # "Stack": {},
+    # "Matrix": {},
+    # "Tile": {},
+    # "TreeTab": {},
+    # "Zoomy": {}
+}
 
 layouts_margin = 5
 layouts_border_width = 4
@@ -120,5 +142,5 @@ widget_decoration_rect_radius = 8
 
 # Wallpapers
 
-wallpapers_sort_method = "creation_date"
+wallpapers_sort_method = "name"
 wallpapers_randomize = False

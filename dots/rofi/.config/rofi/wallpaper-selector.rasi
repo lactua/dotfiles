@@ -1,0 +1,100 @@
+* {
+    bg-col:  #1e1e2e;
+    bg-col-light: #1e1e2e;
+    border-col: #1e1e2e;
+    selected-col: #1e1e2e;
+    blue: #89b4fa;
+    fg-col: #cdd6f4;
+    fg-col2: #f38ba8;
+    grey: #6c7086;
+
+    font: "Sans-serif Medium 14";
+}
+
+window {
+	location: north;
+	anchor: north;
+	y-offset: 60px;
+	background-color: @bg-col;
+	border: 5px solid;
+	border-radius: 22;
+	border-color: @blue;
+    width: 750 px;
+}
+
+mainbox {
+	padding: 15px;
+	background-color: transparent;
+	children: ["listview"];
+}
+
+listview {
+    columns: 6;
+    lines: 1;
+    background-color: @bg-col;
+}
+
+element {
+	background-color: inherit;
+	text-color: @fg-col;
+	border-radius: 5px;
+	padding: 5px;
+    margin: 5px;
+	orientation: vertical;
+	cursor: pointer;
+    children: ["element-icon"];
+}
+
+element-icon {
+    size: 100px;
+    expand: false;
+    background-color: transparent;
+    horizontal-align: 0.5;
+	cursor: pointer;
+    vertical-align: 0.5;
+}
+
+element.normal.normal {
+	background-color: transparent;
+	text-color: @fg-col;
+}
+
+element.normal.urgent {
+	background-color: transparent;
+	text-color: @fg-col;
+}
+
+element.normal.active {
+	background-color: transparent;
+	text-color: @fg-col;
+}
+
+element.selected.normal {
+	background-color: @blue;
+	text-color: @bg-col;
+}
+
+element.selected.urgent {
+	background-color: @blue;
+	text-color: @bg-col;
+}
+
+element.selected.active {
+	background-color: @blue;
+	text-color: @bg-col;
+}
+
+element.alternate.normal {
+	background-color: transparent;
+	text-color: @fg-col;
+}
+
+element.alternate.urgent {
+	background-color: transparent;
+	text-color: @fg-col;
+}
+
+element.alternate.active {
+	background-color: transparent;
+	text-color: @fg-col;
+}

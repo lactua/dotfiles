@@ -5,12 +5,13 @@
 
 import sys
 from os.path import expanduser, exists, normpath, getctime
-from subprocess import run
-from os import system, listdir, makedirs
+from subprocess import run, getoutput
+from os import listdir, makedirs
 from datetime import datetime
 from libqtile import layout, qtile, hook, bar
 from libqtile.config import Click, Drag, Group, Key, KeyChord, Match, Screen
 from libqtile.lazy import lazy
+from libqtile.log_utils import logger
 from qtile_extras import widget
 from shutil import which
 from json import dump, load
@@ -25,12 +26,18 @@ screenshots_path = expanduser(screenshots_path)
 layouts_saved_file = expanduser(layouts_saved_file)
 keybindings_file = expanduser(keybindings_file)
 wallpapers_path = expanduser(wallpapers_path)
+saved_wallpaper_file = expanduser(saved_wallpaper_file)
+wallpapermenu = expanduser(wallpapermenu)
 
 autostarts = list(map(expanduser, autostarts))
 
 if not exists(path := layouts_saved_file):
     with open(path, 'w') as file:
         file.write('{}')
+
+if not exists(saved_wallpaper_file):
+    with open(saved_wallpaper_file, 'w') as file:
+        file.write('')
 
 if not exists(screenshots_path):
     makedirs(screenshots_path)
@@ -102,33 +109,7 @@ layout_theme = {
     "border_on_single": layouts_border_on_single
 }
 
-layouts_tweaks = {
-    "Columns": {
-        "grow_amount": 5,
-        "fair": False,
-        "num_columns": 2,
-        "split": True
-    },
-    "MonadTall": {
-        "ratio": 0.57,
-        "min_ratio": 0.5,
-        "max_ratio": 0.7,
-        "change_size": 20,
-        "change_ratio": 0.01,
-    },
-    "MonadWide": {
-        "ratio": 0.55,
-        "min_ratio": 0.45,
-        "max_ratio": 0.7,
-        "change_size": 35,
-        "change_ratio": 0.02,
-    },
-    "Bsp": {
-        "fair": False,
-    },
-}
-
-layouts = [getattr(layout, i)(**(layout_theme|layouts_tweaks.get(i, {}))) for i in layouts]
+layouts = [getattr(layout, i)(**(layout_theme|layouts[i])) for i in layouts.keys()]
 
 
 #  _____  _    _  _  _  _    _           
@@ -139,9 +120,9 @@ layouts = [getattr(layout, i)(**(layout_theme|layouts_tweaks.get(i, {}))) for i 
 @lazy.function
 def screenshot(_qtile, select=False, sopen=False):
     file_path = datetime.now().strftime(f"{screenshots_path}%d-%m-%Y-%H-%M-%S.jpg")
-    system(f"scrot {'-fs' if select else ''} {file_path}")
-    system(f"xclip -selection clipboard -t image/png -i {file_path}")
-    if sopen: system(f"xdg-open {file_path} &")
+    getoutput(f"scrot {'-fs' if select else ''} {file_path}")
+    getoutput(f"xclip -selection clipboard -t image/png -i {file_path}")
+    if sopen: getoutput(f"xdg-open {file_path} &")
 
 class Wallpaper:
     def formatName(name):
@@ -153,20 +134,15 @@ class Wallpaper:
         return name
 
     def getSavedWallpaper():
-        with open(expanduser('~/.config/nitrogen/bg-saved.cfg'), 'r') as file:
-            path = file.read().splitlines()[1].removeprefix('file=').strip() # Get saved background path
-            directory = normpath(path[::-1].split('/', 1)[1][::-1])
-            name = path.split('/')[-1]
+        with open(expanduser(saved_wallpaper_file), 'r') as file:
+            name = file.read()
 
-        if normpath(directory) == normpath(wallpapers_path) and name in Wallpaper.wallpapers: # Checks if the background folder is wallpapers_path is in wallpapers
-            return Wallpaper.wallpapers.index(name) # Set the pointer on the saved background
+            if name in Wallpaper.wallpapers:
+                return Wallpaper.wallpapers.index(name) # Set the pointer on the saved background
+            else: return 0
 
     def restorePointer():
-        saved = Wallpaper.getSavedWallpaper()
-        if exists(expanduser('~/.config/nitrogen/bg-saved.cfg')) and saved:
-            Wallpaper.current = saved 
-        else:
-            Wallpaper.current = 0
+        Wallpaper.current = Wallpaper.getSavedWallpaper()
 
     def randomize():
         Wallpaper.current = randint(0, len(Wallpaper.wallpapers)-1)
@@ -181,28 +157,34 @@ class Wallpaper:
         else:
             Wallpaper.wallpapers.sort(key=str.lower) # sort by name
 
-        Wallpaper.mode = "zoom-fill"
+        Wallpaper.mode = "fill"
 
         if wallpapers_randomize:
             Wallpaper.randomize()
         else:
             Wallpaper.restorePointer()
 
-        Wallpaper.set()
+    def set(screen):
+        screen.set_wallpaper(f"{wallpapers_path}{Wallpaper.formatName(Wallpaper.wallpapers[Wallpaper.current])}", mode=Wallpaper.mode)
+        with open(expanduser(saved_wallpaper_file), 'w') as file:
+            file.write(Wallpaper.wallpapers[Wallpaper.current])
 
-    def set():
-        system(f'nitrogen --save --set-{Wallpaper.mode} {wallpapers_path}{Wallpaper.formatName(Wallpaper.wallpapers[Wallpaper.current])}')
+    @hook.subscribe.user("set_wallpaper")
+    def set_by_name(name):
+        if name in Wallpaper.wallpapers:
+            Wallpaper.current = Wallpaper.wallpapers.index(name)
+            Wallpaper.set(qtile.current_screen)
 
     @lazy.function
     def next(_qtile):
         Wallpaper.current = (Wallpaper.current + 1) % len(Wallpaper.wallpapers)
-        Wallpaper.set()
+        Wallpaper.set(_qtile.current_screen)
 
     @lazy.function
     def previous(_qtile):
         Wallpaper.current = (Wallpaper.current - 1) % len(Wallpaper.wallpapers)
-        Wallpaper.set()
-    
+        Wallpaper.set(_qtile.current_screen)
+
 Wallpaper.init()
 
 class WidgetTweaker:
@@ -251,6 +233,7 @@ commands = {
     "screenshot_sopen_select": screenshot(sopen=True, select=True),
     "wallpaper_next": Wallpaper.next(),
     "wallpaper_previous": Wallpaper.previous(),
+    "wallpapermenu": lazy.spawn(wallpapermenu),
     "next_layout": lazy.next_layout(),
     "prev_layout": lazy.prev_layout(),
     "next_group": lazy.screen.next_group(),
@@ -394,6 +377,7 @@ left = [
         "Wallpaper",
         padding=0,
         mouse_callbacks={
+            'Button1': lazy.spawn(wallpapermenu),
             'Button4': Wallpaper.next(),
             'Button5': Wallpaper.previous()
         }
@@ -475,8 +459,6 @@ screens = [
         ),
     ),
 ]
-
-
 
 #  _____                     
 # |     | ___  _ _  ___  ___ 
@@ -561,3 +543,5 @@ def _():
                 qtile.groups_map.get(group.name).layout = layouts_saved[group.name]
     
     ready = True
+
+    Wallpaper.set(qtile.current_screen)
